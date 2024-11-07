@@ -1,4 +1,9 @@
 package com.example.memorymanager.model;
 
-public class CommonEventFactory {
+import com.example.memorymanager.handle.Factory;
+
+public class CommonEventFactory implements Factory {
+    public CommonEvent createEvent() {
+        return new CommonEvent();
+    }
 }

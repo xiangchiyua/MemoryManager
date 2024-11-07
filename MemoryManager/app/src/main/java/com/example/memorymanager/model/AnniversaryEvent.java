@@ -5,11 +5,13 @@ import com.example.memorymanager.handle.Item;
 
 import java.util.Date;
 
-public class Anniversary extends Event {
+public class AnniversaryEvent extends Event {
     private String record;
     private String location;
 
-    public Anniversary(String title, boolean isRecurring, Date date, String description, Item item, String record, String location) {
+    public AnniversaryEvent() {}
+
+    public AnniversaryEvent(String title, boolean isRecurring, Date date, String description, Item item, String record, String location) {
         super(title, isRecurring, date, description, item);
         this.record = record;
         this.location = location;

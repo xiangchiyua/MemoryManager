@@ -10,6 +10,8 @@ public class CommonEvent extends Event {
     private Date time;
     private boolean isFinish;
 
+    public CommonEvent() {}
+
     public CommonEvent(String title, boolean isRecurring, Date date, String description, Item item, String type, Date time, boolean isFinish) {
         super(title, isRecurring, date, description, item);
         this.type = type;
