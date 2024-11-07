@@ -8,6 +8,7 @@ import java.util.Date;
 public class AccountEvent extends Event {
     private int money;
 
+    public AccountEvent() {}
     public AccountEvent(String title, boolean isRecurring, Date date, String description, Item item, int money) {
         super(title, isRecurring, date, description, item);
         this.money = money;
