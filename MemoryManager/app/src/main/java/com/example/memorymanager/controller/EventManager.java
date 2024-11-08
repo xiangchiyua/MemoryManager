@@ -1,6 +1,13 @@
 package com.example.memorymanager.controller;
 
+import android.content.Context;
+
 import com.example.memorymanager.handle.Event;
+import com.example.memorymanager.enums.type;
+import com.example.memorymanager.model.AccountEvent;
+import com.example.memorymanager.model.Anniversary;
+import com.example.memorymanager.model.CommonEvent;
+import com.example.memorymanager.tool.SQLHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +19,8 @@ public class EventManager {
     private EventManager() {
         events = new ArrayList<>();
     }
+    Context context;
+    SQLHelper sqlHelper = new SQLHelper(context);
 
     public static EventManager getInstance() {
         if (instance == null) {
@@ -21,11 +30,21 @@ public class EventManager {
     }
 
     public void addEvent(Event event) {
-
+        type type = event.getItem().getType();
+        switch (type){
+            case AccountEvent : sqlHelper.insertAccountEvent((AccountEvent) event);
+            case CommonEvent : sqlHelper.insertCommonEvent((CommonEvent) event);
+            case Anniversary : sqlHelper.insertAnniversary((Anniversary) event);
+        }
     }
 
     public void removeEvent(Event event) {
-
+        type type = event.getItem().getType();
+        switch (type){
+            case AccountEvent : sqlHelper.deleteAccountEventById(event.getItem().getId());
+            case CommonEvent : sqlHelper.deleteCommonEventById(event.getItem().getId());
+            case Anniversary : sqlHelper.deleteAnniversaryById(event.getItem().getId());
+        }
     }
 
     public void updateEvent() {
