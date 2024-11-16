@@ -7,15 +7,12 @@ import java.util.Date;
 
 public class CommonEvent extends Event {
     private String type;
-    private Date time;
     private boolean isFinish;
 
-    public CommonEvent() {}
-
-    public CommonEvent(String title, boolean isRecurring, Date date, String description, Item item, String type, Date time, boolean isFinish) {
+    public CommonEvent(){}
+    public CommonEvent(String title, boolean isRecurring, Date date, String description, Item item, String type, boolean isFinish) {
         super(title, isRecurring, date, description, item);
         this.type = type;
-        this.time = time;
         this.isFinish = isFinish;
     }
 
@@ -27,13 +24,6 @@ public class CommonEvent extends Event {
         this.type = type;
     }
 
-    public Date getTime() {
-        return time;
-    }
-
-    public void setTime(Date time) {
-        this.time = time;
-    }
 
     public boolean isFinish() {
         return isFinish;
