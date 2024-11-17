@@ -6,6 +6,7 @@ import com.example.memorymanager.handle.Event;
 import com.example.memorymanager.enums.type;
 import com.example.memorymanager.model.AccountEvent;
 import com.example.memorymanager.model.Anniversary;
+import com.example.memorymanager.model.AnniversaryEvent;
 import com.example.memorymanager.model.CommonEvent;
 import com.example.memorymanager.tool.SQLHelper;
 
@@ -31,15 +32,17 @@ public class EventManager {
 
     public void addEvent(Event event) {
         type type = event.getItem().getType();
+        sqlHelper.insertItem(event.getItem());
         switch (type){
             case AccountEvent : sqlHelper.insertAccountEvent((AccountEvent) event);
             case CommonEvent : sqlHelper.insertCommonEvent((CommonEvent) event);
-            case Anniversary : sqlHelper.insertAnniversary((Anniversary) event);
+            case Anniversary : sqlHelper.insertAnniversary((AnniversaryEvent) event);
         }
     }
 
     public void removeEvent(Event event) {
         type type = event.getItem().getType();
+        sqlHelper.deleteItemById(event.getItem().getId());
         switch (type){
             case AccountEvent : sqlHelper.deleteAccountEventById(event.getItem().getId());
             case CommonEvent : sqlHelper.deleteCommonEventById(event.getItem().getId());
@@ -52,6 +55,9 @@ public class EventManager {
     }
 
     public List<Event> getEvent() {
-
+        events.addAll(sqlHelper.queryAccountEvent());
+        events.addAll(sqlHelper.queryCommonEvent());
+        events.addAll(sqlHelper.queryAnniversary());
+        return events;
     }
 }
