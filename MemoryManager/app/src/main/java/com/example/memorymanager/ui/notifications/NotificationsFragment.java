@@ -23,7 +23,6 @@ import com.example.memorymanager.handle.Item;
 import com.example.memorymanager.model.AccountEvent;
 import com.example.memorymanager.model.AnniversaryEvent;
 import com.example.memorymanager.model.CommonEvent;
-import com.example.memorymanager.ui.EventAll.EventAllFragment;
 import com.example.memorymanager.ui.EventPageControl;
 import com.example.memorymanager.ui.PagesName;
 import com.example.memorymanager.ui.TemporaryAction;

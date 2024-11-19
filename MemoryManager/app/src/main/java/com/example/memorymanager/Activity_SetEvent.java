@@ -49,9 +49,9 @@ public class Activity_SetEvent extends AppCompatActivity {
     }
 
     private void initRadioButton(){
-        radioButtonAnniversary=(RadioButton) findViewById(R.id.radioButton_type_anniversary);
-        radioButtonStudy=(RadioButton)findViewById(R.id.radioButton_type_study);
-        radioButtonCommon=(RadioButton)findViewById(R.id.radioButton_type_common);
+        radioButtonAnniversary=(RadioButton) findViewById(R.id.radioButton_set_type_anniversary);
+        radioButtonStudy=(RadioButton)findViewById(R.id.radioButton_set_type_study);
+        radioButtonCommon=(RadioButton)findViewById(R.id.radioButton_set_type_common);
 
         radioButtonAnniversary.setChecked(true);
     }
