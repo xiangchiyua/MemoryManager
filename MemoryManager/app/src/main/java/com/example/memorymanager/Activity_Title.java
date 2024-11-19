@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.memorymanager.controller.EventManager;
 import com.example.memorymanager.ui.PagesName;
 import com.example.memorymanager.ui.TemporaryAction;
 
@@ -20,6 +21,7 @@ public class Activity_Title extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        EventManager eventManager = EventManager.getInstance();
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_title);
@@ -37,6 +39,8 @@ public class Activity_Title extends AppCompatActivity {
         button_show.setOnClickListener(SkipToPage(PagesName.page_type));
         button_select.setOnClickListener(SkipToPage(PagesName.page_select));
         button_add.setOnClickListener(SkipToPage(PagesName.page_addType));
+
+        EventManager eventManager = EventManager.getInstance();
     }
 
     //根据传入的页面名称，更新TemporaryAction的相关信息，并跳转到相应界面

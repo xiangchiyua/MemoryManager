@@ -6,12 +6,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.memorymanager.enums.type;
 import com.example.memorymanager.handle.Event;
 import com.example.memorymanager.handle.Item;
 import com.example.memorymanager.model.AccountEvent;
 import com.example.memorymanager.model.AnniversaryEvent;
 import com.example.memorymanager.model.CommonEvent;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ public class SQLHelper extends SQLiteOpenHelper {
     private static final String TABLE_NAME_ANNIVERSARY = "anniversary";
     private static final String TABLE_NAME_ITEM = "item";
 
-    private static final String CREATE_TABLE_ACCOUNTEVENT = "create table "+TABLE_NAME_ACCOUNTEVENT+"(event_id INT PRIMARY KEY AUTO_INCREMENT,\n" +
+    private static final String CREATE_TABLE_ACCOUNTEVENT = "create table "+TABLE_NAME_ACCOUNTEVENT+"(event_id INT PRIMARY KEY AUTOINCREMENT,\n" +
             "title VARCHAR(255) NOT NULL,\n" +
             "is_recurring BOOLEAN NOT NULL,\n" +
             "date DATE,\n" +
@@ -34,7 +36,7 @@ public class SQLHelper extends SQLiteOpenHelper {
             "item_id INT,\n "+
             "money INT NOT NULL,\n" +
             "FOREIGN KEY (item_id) REFERENCES Item(item_id) ON DELETE SET NULL)";
-    private static final String CREATE_TABLE_COMMONEVENT = "create table "+TABLE_NAME_COMMONEVENT+"(event_id INT PRIMARY KEY AUTO_INCREMENT,\n" +
+    private static final String CREATE_TABLE_COMMONEVENT = "create table "+TABLE_NAME_COMMONEVENT+"(event_id INT PRIMARY KEY AUTOINCREMENT,\n" +
             "title VARCHAR(255) NOT NULL,\n" +
             "is_recurring BOOLEAN NOT NULL,\n" +
             "date DATE,\n" +
@@ -43,16 +45,16 @@ public class SQLHelper extends SQLiteOpenHelper {
             "type VARCHAR(50),\n" +
             "is_finish BOOLEAN,\n" +
             "FOREIGN KEY (item_id) REFERENCES Item(item_id) ON DELETE SET NULL)";
-    private static final String CREATE_TABLE_ANNIVERSARY = "create table "+TABLE_NAME_ANNIVERSARY+"(event_id INT PRIMARY KEY AUTO_INCREMENT,\n" +
+    private static final String CREATE_TABLE_ANNIVERSARY = "create table "+TABLE_NAME_ANNIVERSARY+"(event_id INT PRIMARY KEY AUTOINCREMENT,\n" +
             "title VARCHAR(255) NOT NULL,\n" +
             "is_recurring BOOLEAN NOT NULL,\n" +
             "date DATE,\n" +
             "description TEXT,\n" +
             "item_id INT,\n "+
             "FOREIGN KEY (item_id) REFERENCES Item(item_id) ON DELETE SET NULL)";
-    private static final String CREATE_TABLE_ITEM = "create table "+TABLE_NAME_ITEM+"(item_id INT PRIMARY KEY AUTO_INCREMENT,\n" +
+    private static final String CREATE_TABLE_ITEM = "create table "+TABLE_NAME_ITEM+"(item_id INT PRIMARY KEY AUTOINCREMENT,\n" +
             "reminder_date DATE,\n" +
-            "title VARCHAR(255)\n" +
+            "title VARCHAR(255),\n" +
             "description TEXT)";
 
     public SQLHelper(Context context) {
@@ -61,11 +63,22 @@ public class SQLHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
+        db.execSQL(CREATE_TABLE_ACCOUNTEVENT);
+        db.execSQL(CREATE_TABLE_COMMONEVENT);
+        db.execSQL(CREATE_TABLE_ANNIVERSARY);
+        db.execSQL(CREATE_TABLE_ITEM);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        db.execSQL("drop table if exists "+TABLE_NAME_ACCOUNTEVENT);
+        db.execSQL("drop table if exists "+TABLE_NAME_COMMONEVENT);
+        db.execSQL("drop table if exists "+TABLE_NAME_ANNIVERSARY);
+        db.execSQL("drop table if exists "+TABLE_NAME_ITEM);
+        onCreate(db);
+    }
+    public static boolean isDatabaseExist(Context context, String dbName) {
+        File dbFile = context.getDatabasePath(dbName);
+        return dbFile.exists();
     }
     public long insertAccountEvent(AccountEvent accountEvent){
         SQLiteDatabase db = getWritableDatabase();
@@ -91,8 +104,6 @@ public class SQLHelper extends SQLiteOpenHelper {
         values.put("item_id",commonEvent.getItem().getId());
         values.put("type",commonEvent.getType());
         values.put("is_finish",commonEvent.isFinish());
-
-
 
         return db.insert(TABLE_NAME_COMMONEVENT,null,values);
     }
@@ -160,6 +171,8 @@ public class SQLHelper extends SQLiteOpenHelper {
                 int money = cursor.getInt(cursor.getColumnIndexOrThrow("money"));
 
                 AccountEvent accountEvent = new AccountEvent();
+                Item item = new Item(date,title,description,item_id, type.AccountEvent);
+                accountEvent.setItem(item);
                 accountEvent.setMoney(money);
                 accountEvent.setDescription(description);
                 accountEvent.setDate(date);

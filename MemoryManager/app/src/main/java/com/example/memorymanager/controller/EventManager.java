@@ -1,6 +1,7 @@
 package com.example.memorymanager.controller;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.example.memorymanager.handle.Event;
 import com.example.memorymanager.enums.type;
@@ -22,6 +23,12 @@ public class EventManager {
     }
     Context context;
     SQLHelper sqlHelper = new SQLHelper(context);
+    SQLiteDatabase db;
+
+    static{
+        EventManager eventManager = EventManager.getInstance();
+        if(instance.sqlHelper.isDatabaseExist(instance.context,"memory.db" )) instance.sqlHelper.onCreate(instance.db);
+    }
 
     public static EventManager getInstance() {
         if (instance == null) {
