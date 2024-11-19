@@ -15,6 +15,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.memorymanager.Activity_EventInfo;
+import com.example.memorymanager.Activity_ItemType;
+import com.example.memorymanager.Activity_Type;
+import com.example.memorymanager.R;
 import com.example.memorymanager.databinding.FragmentEventAllBinding;
 import com.example.memorymanager.enums.type;
 import com.example.memorymanager.handle.Event;
@@ -23,6 +26,7 @@ import com.example.memorymanager.model.AccountEvent;
 import com.example.memorymanager.model.AnniversaryEvent;
 import com.example.memorymanager.model.CommonEvent;
 import com.example.memorymanager.ui.EventPageControl;
+import com.example.memorymanager.ui.PagesName;
 import com.example.memorymanager.ui.TemporaryAction;
 
 import java.util.ArrayList;
@@ -51,6 +55,8 @@ public class EventAllFragment extends Fragment implements EventPageControl {
         final TextView textView = binding.textEventAll;
         //界面事件列表的layout控件对象
         layout=binding.linearLayoutEventAll;
+        //初始化返回按钮
+        initBackButton();
         //界面初始化
         test();
         updateEventLayout();
@@ -87,6 +93,21 @@ public class EventAllFragment extends Fragment implements EventPageControl {
         eventList.add(new CommonEvent("common 1",true, new Date(),"empty",i,"empty",true));
     }
 
+
+
+    //初始化返回按钮
+    private void initBackButton(){
+        Button button_back=binding.buttonBackFromPageItemType;
+        button_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TemporaryAction.setPriorPage(PagesName.page_itemType);
+                startActivity(new Intent(EventAllFragment.super.getContext(), Activity_Type.class));
+            }
+        });
+    }
+
+    //implement interface EventPageControl
 
     /*更新事件列表容器（全部更新），并将更新结果展示到前端Layout控件；
      （仅修改本类的容器和前端控件，不需要关心数据库操作）*/
@@ -131,6 +152,7 @@ public class EventAllFragment extends Fragment implements EventPageControl {
             @Override
             public void onClick(View view) {
                 TemporaryAction.setEventToShow(event);
+                TemporaryAction.setPriorPage(PagesName.page_itemType);
                 startActivity(new Intent(EventAllFragment.super.getContext(), Activity_EventInfo.class));
             }
         });

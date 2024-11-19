@@ -6,10 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".ui.EventUndo.EventUndoFragment">
 
+    <Button
+        android:id="@+id/button_backFrom_page_itemType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="back"
+        tools:layout_editor_absoluteX="2dp"
+        tools:layout_editor_absoluteY="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <TextView
         android:id="@+id/text_event_undo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -17,32 +27,30 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
     <ScrollView
-        android:layout_width="409dp"
-        android:layout_height="694dp"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="36dp"
-        app:layout_constraintTop_toBottomOf="@id/text_event_undo"
+        android:layout_width="413dp"
+        android:layout_height="673dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/text_event_undo">
 
         <LinearLayout
             android:id="@+id/linear_layout_event_undo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/button_test2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="hello world 2"/>
+                android:text="hello world 2" />
 
         </LinearLayout>
     </ScrollView>

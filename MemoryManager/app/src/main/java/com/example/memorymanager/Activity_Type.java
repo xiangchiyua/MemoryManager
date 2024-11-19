@@ -11,6 +11,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.memorymanager.ui.PagesName;
 import com.example.memorymanager.ui.TemporaryAction;
 
 public class Activity_Type extends AppCompatActivity {
@@ -26,6 +27,15 @@ public class Activity_Type extends AppCompatActivity {
             return insets;
         });
 
+        //初始化返回按钮
+        Button button_back=(Button)findViewById(R.id.button_backFrom_page_type);
+        button_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TemporaryAction.setPriorPage(PagesName.page_type);
+                startActivity(new Intent(Activity_Type.this,Activity_Title.class));
+            }
+        });
         //获取界面对应的按钮对象
         Button button_anniversary=(Button)findViewById(R.id.button_anniversary);
         Button button_study=(Button)findViewById(R.id.button_study);
@@ -42,10 +52,14 @@ public class Activity_Type extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 TemporaryAction.setChooseFrom_page_type(choose);
-                if(TemporaryAction.getChooseFrom_page_title()==0)
+                if(TemporaryAction.getChooseFrom_page_title()==0){
+                    TemporaryAction.setPriorPage(PagesName.page_type);
                     startActivity(new Intent(Activity_Type.this, Activity_ItemType.class));
-                if(TemporaryAction.getChooseFrom_page_title()==2)
+                }
+                if(TemporaryAction.getChooseFrom_page_title()==2){
+                    TemporaryAction.setPriorPage(PagesName.page_type);
                     startActivity(new Intent(Activity_Type.this, Activity_SetEvent.class));
+                }
             }
         };
     }

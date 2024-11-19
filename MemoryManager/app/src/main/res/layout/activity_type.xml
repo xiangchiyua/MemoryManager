@@ -8,30 +8,47 @@
     tools:context=".Activity_Type">
 
     <Button
+        android:id="@+id/button_backFrom_page_type"
+        android:layout_width="112dp"
+        android:layout_height="67dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
+        android:text="back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
         android:id="@+id/button_anniversary"
-        android:layout_width="match_parent"
+        android:layout_width="380dp"
         android:layout_height="150dp"
-        android:layout_marginTop="76dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="124dp"
         android:text="Anniversary"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintBottom_toTopOf="@id/button_study"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button_study"
-        android:layout_width="match_parent"
+        android:layout_width="380dp"
         android:layout_height="150dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
         android:text="Study"
-        app:layout_constraintTop_toBottomOf="@id/button_anniversary"
-        tools:layout_editor_absoluteX="16dp" />
+        app:layout_constraintBottom_toTopOf="@id/button_common"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_anniversary" />
 
     <Button
         android:id="@+id/button_common"
-        android:layout_width="match_parent"
+        android:layout_width="380dp"
         android:layout_height="150dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
         android:text="Common"
-        app:layout_constraintTop_toBottomOf="@id/button_study"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_study" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

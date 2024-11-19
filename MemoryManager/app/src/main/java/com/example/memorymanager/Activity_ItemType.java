@@ -1,10 +1,11 @@
 package com.example.memorymanager;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
+import com.example.memorymanager.ui.PagesName;
 import com.example.memorymanager.ui.TemporaryAction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 

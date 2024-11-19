@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.memorymanager.ui.PagesName;
 import com.example.memorymanager.ui.TemporaryAction;
 
 public class Activity_Title extends AppCompatActivity {
@@ -33,36 +34,39 @@ public class Activity_Title extends AppCompatActivity {
         Button button_select=(Button)findViewById(R.id.button_select);
         Button button_add=(Button)findViewById(R.id.button_add);
         //为本界面按钮添加View.OnClickListener类型的响应对象
-        button_show.setOnClickListener(SkipToPage("page_type"));
-        button_select.setOnClickListener(SkipToPage("page_select"));
-        button_add.setOnClickListener(SkipToPage("page_addType"));
+        button_show.setOnClickListener(SkipToPage(PagesName.page_type));
+        button_select.setOnClickListener(SkipToPage(PagesName.page_select));
+        button_add.setOnClickListener(SkipToPage(PagesName.page_addType));
     }
 
     //根据传入的页面名称，更新TemporaryAction的相关信息，并跳转到相应界面
-    private View.OnClickListener SkipToPage(String pageName){
+    private View.OnClickListener SkipToPage(PagesName pageName){
         try{
             switch(pageName){
-                case "page_type":
+                case page_type:
                     return new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             TemporaryAction.setChooseFrom_page_title(0);
+                            TemporaryAction.setPriorPage(PagesName.page_title);
                             startActivity(new Intent(Activity_Title.this, Activity_Type.class));
                         }
                     };
-                case "page_select":
+                case page_select:
                     return new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             TemporaryAction.setChooseFrom_page_title(1);
+                            TemporaryAction.setPriorPage(PagesName.page_title);
                             startActivity(new Intent(Activity_Title.this, Activity_Select.class));
                         }
                     };
-                case "page_addType":
+                case page_addType:
                     return new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             TemporaryAction.setChooseFrom_page_title(2);
+                            TemporaryAction.setPriorPage(PagesName.page_title);
                             startActivity(new Intent(Activity_Title.this, Activity_Type.class));
                         }
                     };

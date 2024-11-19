@@ -7,9 +7,9 @@ import com.example.memorymanager.handle.Event;
 public class TemporaryAction {
 
     //if click return from certain page, then jump to the following page:
-    private static String priorPage="pageTitle";
-    public void setPriorPage(String page){ priorPage=page; }
-    public String getPriorPage(){ return priorPage; }
+    private static PagesName priorPage=PagesName.page_title;
+    public static void setPriorPage(PagesName page){ priorPage=page; }
+    public static PagesName getPriorPage(){ return priorPage; }
 
     //page_type;
     // click "Anniversary", this num will be set to 0;

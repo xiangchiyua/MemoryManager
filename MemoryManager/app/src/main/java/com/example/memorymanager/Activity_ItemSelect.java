@@ -14,26 +14,27 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.memorymanager.ui.PagesName;
 import com.example.memorymanager.ui.TemporaryAction;
 
-public class Activity_Select extends AppCompatActivity {
+public class Activity_ItemSelect extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_select);
+        setContentView(R.layout.activity_item_select);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        Button button_back=(Button) findViewById(R.id.button_backFrom_page_select);
+        Button button_back=(Button)findViewById(R.id.button_backFrom_page_itemSelect);
         button_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TemporaryAction.setPriorPage(PagesName.page_select);
-                startActivity(new Intent(Activity_Select.this,Activity_Title.class));
+                TemporaryAction.setPriorPage(PagesName.page_itemSelect);
+                startActivity(new Intent(Activity_ItemSelect.this,Activity_Select.class));
             }
         });
+
     }
 }
