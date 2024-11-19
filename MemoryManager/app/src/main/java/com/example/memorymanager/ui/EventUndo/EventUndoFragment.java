@@ -1,4 +1,4 @@
-package com.example.memorymanager.ui.notifications;
+package com.example.memorymanager.ui.EventUndo;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -15,7 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.memorymanager.Activity_EventInfo;
-import com.example.memorymanager.databinding.FragmentEventNotificationsBinding;
+import com.example.memorymanager.databinding.FragmentEventUndoBinding;
+
 import com.example.memorymanager.enums.type;
 import com.example.memorymanager.handle.Event;
 import com.example.memorymanager.handle.Item;
@@ -30,39 +31,39 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class NotificationsFragment extends Fragment implements EventPageControl {
+public class EventUndoFragment extends Fragment implements EventPageControl {
 
     //本页面对应的Event类型的事件的容器
     private List<Event> eventList=new ArrayList<>();
     private LinearLayout layout;
     private HashMap<Event,LinearLayout> itemTable =new HashMap<>();
 
-    private FragmentEventNotificationsBinding binding;
+    private FragmentEventUndoBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NotificationsViewModel notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
+        EventUndoViewModel eventUndoModel =
+                new ViewModelProvider(this).get(EventUndoViewModel.class);
 
-        binding = FragmentEventNotificationsBinding.inflate(inflater, container, false);
+        binding = FragmentEventUndoBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textEventNotifications;
-        //获取本界面的LinearLayout事件列表控件
-        layout=binding.linearLayoutEventNotifications;
-        //初始化界面
+        final TextView textView = binding.textEventUndo;
+        //界面的Layout事件容器控件
+        layout=binding.linearLayoutEventUndo;
+        //界面初始化
         test();
         updateEventLayout();
-        Button button=binding.buttonTest3;
+        Button button=binding.buttonTest2;
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                eventList.get(4).setTitle("changed title");
-                updateEventLayout(eventList.get(4));
+                eventList.get(3).setTitle("changed undo title");
+                updateEventLayout(eventList.get(3));
             }
         });
 
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        eventUndoModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
@@ -80,10 +81,8 @@ public class NotificationsFragment extends Fragment implements EventPageControl 
         eventList.add(new AccountEvent("Summer festival",true, new Date(),"empty",i,1));
         eventList.add(new AccountEvent("Autumn festival",true, new Date(),"empty",i,1));
         eventList.add(new AnniversaryEvent("anniversary 4",true, new Date(),"empty",i,"empty","empty"));
-        eventList.add(new CommonEvent("common 3",true, new Date(),"empty",i,"empty",true));
-        eventList.add(new CommonEvent("common 4",true, new Date(),"empty",i,"empty",true));
-        eventList.add(new CommonEvent("common 5",true, new Date(),"empty",i,"empty",true));
-        eventList.add(new CommonEvent("common 6",true, new Date(),"empty",i,"empty",true));
+        eventList.add(new AnniversaryEvent("anniversary 5",true, new Date(),"empty",i,"empty","empty"));
+        eventList.add(new CommonEvent("common 2",true, new Date(),"empty",i,"empty",true));
     }
 
 
@@ -132,7 +131,7 @@ public class NotificationsFragment extends Fragment implements EventPageControl 
             @Override
             public void onClick(View view) {
                 TemporaryAction.setEventToShow(event);
-                startActivity(new Intent(NotificationsFragment.super.getContext(), Activity_EventInfo.class));
+                startActivity(new Intent(EventUndoFragment.super.getContext(), Activity_EventInfo.class));
             }
         });
         layout.addView(layout_temp);

@@ -13,9 +13,29 @@
         android:theme="@style/Theme.MemoryManager"
         tools:targetApi="31">
         <activity
+            android:name=".Activity_EventInfo"
+            android:exported="false" />
+        <activity
+            android:name=".Activity_ItemType"
+            android:exported="false"
+            android:label="@string/title_activity_item_type" />
+        <activity
+            android:name=".Activity_SetEvent"
+            android:exported="false" />
+        <activity
+            android:name=".Activity_Select"
+            android:exported="false" />
+        <activity
+            android:name=".Activity_Type"
+            android:exported="false"
+            android:label="@string/title_activity_type"
+            android:theme="@style/Theme.MemoryManager.NoActionBar" />
+        <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name">
+            android:exported="false" />
+        <activity
+            android:name=".Activity_Title"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

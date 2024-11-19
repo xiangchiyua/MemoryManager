@@ -1,4 +1,4 @@
-package com.example.memorymanager.ui.notifications;
+package com.example.memorymanager.ui.EventAll;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.memorymanager.Activity_EventInfo;
-import com.example.memorymanager.databinding.FragmentEventNotificationsBinding;
+import com.example.memorymanager.databinding.FragmentEventAllBinding;
 import com.example.memorymanager.enums.type;
 import com.example.memorymanager.handle.Event;
 import com.example.memorymanager.handle.Item;
@@ -30,39 +30,40 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class NotificationsFragment extends Fragment implements EventPageControl {
+public class EventAllFragment extends Fragment implements EventPageControl {
 
     //本页面对应的Event类型的事件的容器
-    private List<Event> eventList=new ArrayList<>();
+    private List<Event>eventList=new ArrayList<>();
     private LinearLayout layout;
     private HashMap<Event,LinearLayout> itemTable =new HashMap<>();
 
-    private FragmentEventNotificationsBinding binding;
+    private FragmentEventAllBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NotificationsViewModel notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
 
-        binding = FragmentEventNotificationsBinding.inflate(inflater, container, false);
+        EventAllViewModel eventAllViewModel =
+                new ViewModelProvider(this).get(EventAllViewModel.class);
+
+        binding = FragmentEventAllBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textEventNotifications;
-        //获取本界面的LinearLayout事件列表控件
-        layout=binding.linearLayoutEventNotifications;
-        //初始化界面
+        final TextView textView = binding.textEventAll;
+        //界面事件列表的layout控件对象
+        layout=binding.linearLayoutEventAll;
+        //界面初始化
         test();
         updateEventLayout();
-        Button button=binding.buttonTest3;
+        Button button=binding.buttonTest;
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                eventList.get(4).setTitle("changed title");
-                updateEventLayout(eventList.get(4));
+                eventList.get(3).setTitle("changed title");
+                updateEventLayout(eventList.get(3));
             }
         });
 
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        eventAllViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
@@ -77,17 +78,15 @@ public class NotificationsFragment extends Fragment implements EventPageControl 
 
     private void test(){
         Item i=new Item(new Date(),"itemTitle","itemDescription",10, type.AccountEvent);
+        eventList.add(new AccountEvent("Spring festival",true, new Date(),"empty",i,1));
         eventList.add(new AccountEvent("Summer festival",true, new Date(),"empty",i,1));
         eventList.add(new AccountEvent("Autumn festival",true, new Date(),"empty",i,1));
-        eventList.add(new AnniversaryEvent("anniversary 4",true, new Date(),"empty",i,"empty","empty"));
-        eventList.add(new CommonEvent("common 3",true, new Date(),"empty",i,"empty",true));
-        eventList.add(new CommonEvent("common 4",true, new Date(),"empty",i,"empty",true));
-        eventList.add(new CommonEvent("common 5",true, new Date(),"empty",i,"empty",true));
-        eventList.add(new CommonEvent("common 6",true, new Date(),"empty",i,"empty",true));
+        eventList.add(new AnniversaryEvent("anniversary 1",true, new Date(),"empty",i,"empty","empty"));
+        eventList.add(new AnniversaryEvent("anniversary 2",true, new Date(),"empty",i,"empty","empty"));
+        eventList.add(new AnniversaryEvent("anniversary 3",true, new Date(),"empty",i,"empty","empty"));
+        eventList.add(new CommonEvent("common 1",true, new Date(),"empty",i,"empty",true));
     }
 
-
-    //interface EventPageControl
 
     /*更新事件列表容器（全部更新），并将更新结果展示到前端Layout控件；
      （仅修改本类的容器和前端控件，不需要关心数据库操作）*/
@@ -132,7 +131,7 @@ public class NotificationsFragment extends Fragment implements EventPageControl 
             @Override
             public void onClick(View view) {
                 TemporaryAction.setEventToShow(event);
-                startActivity(new Intent(NotificationsFragment.super.getContext(), Activity_EventInfo.class));
+                startActivity(new Intent(EventAllFragment.super.getContext(), Activity_EventInfo.class));
             }
         });
         layout.addView(layout_temp);

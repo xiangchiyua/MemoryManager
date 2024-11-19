@@ -5,9 +5,11 @@ import com.example.memorymanager.handle.Item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.Thread.*;
 
 public class NotificationService implements Runnable {
     private NotificationService(){}
+    private boolean enabled=true;
 
     private static NotificationService service=new NotificationService();
 
@@ -39,8 +41,15 @@ public class NotificationService implements Runnable {
 
     @Override
     public void run() {
-        for (Item item:notifiedEventItemList) {
-            //item.SendNotification();
+        while(enabled){
+            try {
+                Thread.sleep(5000);
+                for (Item item:notifiedEventItemList) {
+                    item.SendNotification();
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
