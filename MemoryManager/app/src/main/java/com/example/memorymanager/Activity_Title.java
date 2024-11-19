@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.memorymanager.controller.EventManager;
+import com.example.memorymanager.controller.NotificationService;
 import com.example.memorymanager.ui.PagesName;
 import com.example.memorymanager.ui.TemporaryAction;
 
@@ -41,6 +42,9 @@ public class Activity_Title extends AppCompatActivity {
         button_add.setOnClickListener(SkipToPage(PagesName.page_addType));
 
         EventManager eventManager = EventManager.getInstance();
+        eventManager.initialize(this); // 传递 Activity 的 Context
+        eventManager.checkDatabase();
+        NotificationService servicce=NotificationService.getService();
     }
 
     //根据传入的页面名称，更新TemporaryAction的相关信息，并跳转到相应界面

@@ -1,6 +1,9 @@
 package com.example.memorymanager.ui;
 
 import android.graphics.Region;
+
+import com.example.memorymanager.controller.EventManager;
+import com.example.memorymanager.controller.NotificationService;
 import com.example.memorymanager.handle.Event;
 
 //本类起到类似Cache的作用，保存使用软件期间一些比较重要的操作
@@ -36,4 +39,12 @@ public class TemporaryAction {
     private static Event eventToShow=null;
     public static void setEventToShow(Event event){ eventToShow=event; }
     public static Event getEventToShow(){ return eventToShow; }
+
+    public static EventManager getEventManager(){
+        return EventManager.getInstance();
+    }
+
+    public static NotificationService getNotificationService(){
+        return NotificationService.getService();
+    }
 }

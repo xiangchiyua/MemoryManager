@@ -3,8 +3,10 @@ package com.example.memorymanager.tool;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.memorymanager.enums.type;
 import com.example.memorymanager.handle.Event;
@@ -63,10 +65,16 @@ public class SQLHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TABLE_ACCOUNTEVENT);
-        db.execSQL(CREATE_TABLE_COMMONEVENT);
-        db.execSQL(CREATE_TABLE_ANNIVERSARY);
-        db.execSQL(CREATE_TABLE_ITEM);
+        try{
+            db.execSQL(CREATE_TABLE_ACCOUNTEVENT);
+            db.execSQL(CREATE_TABLE_COMMONEVENT);
+            db.execSQL(CREATE_TABLE_ANNIVERSARY);
+            db.execSQL(CREATE_TABLE_ITEM);
+        }catch (SQLException e) {
+            Log.e("DatabaseError", "Error creating tables: " + e.getMessage());
+            e.printStackTrace();
+        }
+
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

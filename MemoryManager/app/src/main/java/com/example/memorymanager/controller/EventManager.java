@@ -1,7 +1,10 @@
 package com.example.memorymanager.controller;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.memorymanager.handle.Event;
 import com.example.memorymanager.enums.type;
@@ -22,13 +25,23 @@ public class EventManager {
         events = new ArrayList<>();
     }
     Context context;
-    SQLHelper sqlHelper = new SQLHelper(context);
+    SQLHelper sqlHelper;
     SQLiteDatabase db;
-
-    static{
-        EventManager eventManager = EventManager.getInstance();
-        if(instance.sqlHelper.isDatabaseExist(instance.context,"memory.db" )) instance.sqlHelper.onCreate(instance.db);
+    public void initialize(Context context) {
+        this.context = context.getApplicationContext(); // 避免内存泄漏
+        sqlHelper = new SQLHelper(this.context); // 初始化 SQLHelper
     }
+
+    public void checkDatabase() {
+        db = sqlHelper.getWritableDatabase();
+        if (sqlHelper.isDatabaseExist(context, "memory.db")) {
+            Log.e(TAG, "checkDatabase: checked");
+        } else {
+            sqlHelper.onCreate(db);
+            Log.e(TAG, "checkDatabase: can not find database");
+        }
+    }
+
 
     public static EventManager getInstance() {
         if (instance == null) {
