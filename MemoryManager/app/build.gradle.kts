@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     implementation(libs.activity)
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("BaiduLBS_Android.jar"))))
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
