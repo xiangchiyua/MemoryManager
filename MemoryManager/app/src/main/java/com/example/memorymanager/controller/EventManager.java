@@ -50,8 +50,8 @@ public class EventManager {
         return instance;
     }
 
-    public void addEvent(Event event,List<TravelRecord> travelRecordList) {
-        type type = event.getItem().getType();
+    public void addEvent(Event event, List<TravelRecord> travelRecordList, type type) {
+        //type type = event.getItem().getType();
         //int item_id = (int)sqlHelper.insertItem(event.getItem());
         switch (type){
             case AccountEvent : sqlHelper.insertAccountEvent((AccountEvent) event);
@@ -71,9 +71,15 @@ public class EventManager {
         }
     }
 
-    public void updateEvent() {
-
+    public void updateEvent(Event event) {
+        type type = event.getItem().getType();
+        switch (type){
+            case AccountEvent : sqlHelper.updateAccountEvent((AccountEvent) event);
+            case CommonEvent : sqlHelper.updateCommonEvent((CommonEvent) event);
+            case Anniversary : sqlHelper.updateAnniversary((AnniversaryEvent) event);
+        }
     }
+
 
     public List<Event> getEvent() {
         events.addAll(sqlHelper.queryAccountEvent());

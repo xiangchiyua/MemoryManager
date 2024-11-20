@@ -203,6 +203,39 @@ public class SQLHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         return db.delete(TABLE_NAME_RECORD,"item_id = ?",new String[]{String.valueOf(id)});
     }
+    public long updateAccountEvent(AccountEvent accountEvent){
+        SQLiteDatabase db = getWritableDatabase();
+        int id = accountEvent.getItem().getId();
+        ContentValues values = new ContentValues();
+        values.put("title",accountEvent.getTitle());
+        values.put("is_recurring",accountEvent.isRecurring());
+        values.put("date",accountEvent.getDate().toString());
+        values.put("description",accountEvent.getDescription());
+        values.put("money",accountEvent.getMoney());
+        return db.update(TABLE_NAME_ACCOUNTEVENT,values,"item_id = ?",new String[]{String.valueOf(id)});
+    }
+    public long updateCommonEvent(CommonEvent commonEvent){
+        SQLiteDatabase db = getWritableDatabase();
+        int id = commonEvent.getItem().getId();
+        ContentValues values = new ContentValues();
+        values.put("title",commonEvent.getTitle());
+        values.put("is_recurring",commonEvent.isRecurring());
+        values.put("date",commonEvent.getDate().toString());
+        values.put("description",commonEvent.getDescription());
+        values.put("type",commonEvent.getType());
+        values.put("is_finish",commonEvent.isFinish());
+        return db.update(TABLE_NAME_ACCOUNTEVENT,values,"item_id = ?",new String[]{String.valueOf(id)});
+    }
+    public long updateAnniversary(AnniversaryEvent anniversary){
+        SQLiteDatabase db = getWritableDatabase();
+        int id = anniversary.getItem().getId();
+        ContentValues values = new ContentValues();
+        values.put("title",anniversary.getTitle());
+        values.put("is_recurring",anniversary.isRecurring());
+        values.put("date",anniversary.getDate().toString());
+        values.put("description",anniversary.getDescription());
+        return db.update(TABLE_NAME_ACCOUNTEVENT,values,"item_id = ?",new String[]{String.valueOf(id)});
+    }
     public Item queryItem(int id){
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE_NAME_ITEM,null,"where item_id = ?",new String[]{String.valueOf(id)},
@@ -267,6 +300,42 @@ public class SQLHelper extends SQLiteOpenHelper {
         }
         return AccountEventList;
     }
+    public List<Event> queryAccountEventByIsRecurring(String title){
+        SQLiteDatabase db = getWritableDatabase();
+        List<Event> AccountEventList = new ArrayList<>();
+        Cursor cursor = db.query(TABLE_NAME_ACCOUNTEVENT,null,"title like ?",new String[]{title},null,
+                null,null,null);
+        if(cursor != null){
+            while(cursor.moveToNext()){
+                int isRecurring_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_recurring"));
+                boolean isRecurring = false;
+                if(isRecurring_int==1) isRecurring = true;
+                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String date_str = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                Date date;
+                try {
+                    date = ft.parse(date_str);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+                String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+                int item_id = cursor.getInt(cursor.getColumnIndexOrThrow("item_id"));
+                int money = cursor.getInt(cursor.getColumnIndexOrThrow("money"));
+                AccountEvent accountEvent = new AccountEvent();
+                Item item = queryItem(item_id);
+                accountEvent.setItem(item);
+                accountEvent.setMoney(money);
+                accountEvent.setDescription(description);
+                accountEvent.setDate(date);
+                accountEvent.setTitle(title);
+                accountEvent.setRecurring(isRecurring);
+                AccountEventList.add(accountEvent);
+            }
+            cursor.close();
+            db.close();
+        }
+        return AccountEventList;
+    }
     public List<Event>queryCommonEvent(){
         SQLiteDatabase db = getWritableDatabase();
         List<Event> CommonEventList = new ArrayList<>();
@@ -307,6 +376,46 @@ public class SQLHelper extends SQLiteOpenHelper {
         }
         return CommonEventList;
     }
+    public List<Event>queryCommonEventBy(String title){
+        SQLiteDatabase db = getWritableDatabase();
+        List<Event> CommonEventList = new ArrayList<>();
+        Cursor cursor = db.query(TABLE_NAME_COMMONEVENT,null,"title like ?",new String[]{title},
+                null,null,null);
+        if(cursor != null){
+            while(cursor.moveToNext()){
+                //String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+                int isRecurring_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_recurring"));
+                boolean isRecurring = false;
+                if(isRecurring_int==1) isRecurring = true;
+                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String date_str = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                Date date;
+                try {
+                    date = ft.parse(date_str);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+                String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+                int item_id = cursor.getInt(cursor.getColumnIndexOrThrow("item_id"));
+                int is_finish_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_finish"));
+                boolean is_finish = false;
+                if(is_finish_int==1) is_finish = true;
+
+                CommonEvent commonEvent = new CommonEvent();
+                Item item = queryItem(item_id);
+                commonEvent.setItem(item);
+                commonEvent.setDescription(description);
+                commonEvent.setDate(date);
+                commonEvent.setTitle(title);
+                commonEvent.setRecurring(isRecurring);
+                commonEvent.setFinish(is_finish);
+                CommonEventList.add(commonEvent);
+            }
+            cursor.close();
+            db.close();
+        }
+        return CommonEventList;
+    }
     public List<Event>queryAnniversary(){
         SQLiteDatabase db = getWritableDatabase();
         List<Event> AnniversaryList = new ArrayList<>();
@@ -315,6 +424,42 @@ public class SQLHelper extends SQLiteOpenHelper {
         if(cursor != null){
             while(cursor.moveToNext()){
                 String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+                int isRecurring_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_recurring"));
+                boolean isRecurring = false;
+                if(isRecurring_int==1) isRecurring = true;
+                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String date_str = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                Date date;
+                try {
+                    date = ft.parse(date_str);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+                String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+                int item_id = cursor.getInt(cursor.getColumnIndexOrThrow("item_id"));
+
+                AnniversaryEvent anniversary = new AnniversaryEvent();
+                Item item = queryItem(item_id);
+                anniversary.setItem(item);
+                anniversary.setDescription(description);
+                anniversary.setDate(date);
+                anniversary.setTitle(title);
+                anniversary.setRecurring(isRecurring);
+                AnniversaryList.add(anniversary);
+            }
+            cursor.close();
+            db.close();
+        }
+        return AnniversaryList;
+    }
+    public List<Event>queryAnniversaryBy(String title){
+        SQLiteDatabase db = getWritableDatabase();
+        List<Event> AnniversaryList = new ArrayList<>();
+        Cursor cursor = db.query(TABLE_NAME_ANNIVERSARY,null,"title like ?",new String[]{title},
+                null,null,null);
+        if(cursor != null){
+            while(cursor.moveToNext()){
+                //String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
                 int isRecurring_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_recurring"));
                 boolean isRecurring = false;
                 if(isRecurring_int==1) isRecurring = true;
