@@ -1,46 +1,30 @@
 package com.example.memorymanager.model;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class Location {
-    int id;
-    String location;
-
-    String information;
-    String time;
-
-    public int getId() {
-        return id;
+    double latitude;
+    double longitude;
+    String description;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
-    public String getLocation() {
-        return location;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
-    public String getInformation() {
-        return information;
+    public String getDescription() {
+        return description;
     }
 
-    public void setInformation(String information) {
-        this.information = information;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(Date time_) {
-        SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss");
-        String time = ft.format(time_);
-        this.time = time;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

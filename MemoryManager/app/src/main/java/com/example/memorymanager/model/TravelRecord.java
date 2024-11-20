@@ -1,0 +1,62 @@
+package com.example.memorymanager.model;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class TravelRecord {
+    int id;
+    Location location;
+
+    String information;
+    String time;
+
+    public TravelRecord() {
+    }
+    public TravelRecord(Location location, String information, String time, int id) {
+        this.location = location;
+        this.information = information;
+        this.time = time;
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getLocationDescription() {
+        return location.getDescription();
+    }
+
+    public void setLocationDescription(String description) {
+        this.location.setDescription(description);
+    }
+
+    public double getLocationLatitude() { return location.getLatitude(); }
+
+    public void setLocationLatitude(double latitude) { this.location.setLatitude(latitude); }
+
+    public double getLocationLongitude() { return location.getLongitude(); }
+
+    public void setLocationLongitude(double longitude) { this.location.setLongitude(longitude); }
+    public String getInformation() {
+        return information;
+    }
+
+    public void setInformation(String information) {
+        this.information = information;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(Date time_) {
+        SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss");
+        String time = ft.format(time_);
+        this.time = time;
+    }
+}

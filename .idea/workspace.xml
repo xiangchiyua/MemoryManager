@@ -22,7 +22,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7551c30b-ba7d-4333-8e62-1e4147c8610d" name="Changes" comment="Configured BaiduMap SDK">
-      <change beforePath="$PROJECT_DIR$/MemoryManager/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MemoryManager/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MemoryManager/app/src/main/java/com/example/memorymanager/model/TravelRecord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MemoryManager/app/src/main/java/com/example/memorymanager/controller/EventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/MemoryManager/app/src/main/java/com/example/memorymanager/controller/EventManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MemoryManager/app/src/main/java/com/example/memorymanager/model/Anniversary.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MemoryManager/app/src/main/java/com/example/memorymanager/model/Location.java" beforeDir="false" afterPath="$PROJECT_DIR$/MemoryManager/app/src/main/java/com/example/memorymanager/model/Location.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -234,7 +238,23 @@
       <option name="project" value="LOCAL" />
       <updated>1732106667825</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Configured BaiduMap SDK">
+      <option name="closed" value="true" />
+      <created>1732107643924</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1732107643924</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Configured BaiduMap SDK">
+      <option name="closed" value="true" />
+      <created>1732107815606</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1732107815606</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

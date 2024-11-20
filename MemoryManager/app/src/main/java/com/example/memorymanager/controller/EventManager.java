@@ -9,7 +9,6 @@ import android.util.Log;
 import com.example.memorymanager.handle.Event;
 import com.example.memorymanager.enums.type;
 import com.example.memorymanager.model.AccountEvent;
-import com.example.memorymanager.model.Anniversary;
 import com.example.memorymanager.model.AnniversaryEvent;
 import com.example.memorymanager.model.CommonEvent;
 import com.example.memorymanager.tool.SQLHelper;
