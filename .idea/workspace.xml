@@ -22,11 +22,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7551c30b-ba7d-4333-8e62-1e4147c8610d" name="Changes" comment="Configured BaiduMap SDK">
-      <change afterPath="$PROJECT_DIR$/MemoryManager/app/src/main/java/com/example/memorymanager/model/TravelRecord.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MemoryManager/app/src/main/java/com/example/memorymanager/controller/EventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/MemoryManager/app/src/main/java/com/example/memorymanager/controller/EventManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MemoryManager/app/src/main/java/com/example/memorymanager/model/Anniversary.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/MemoryManager/app/src/main/java/com/example/memorymanager/model/Location.java" beforeDir="false" afterPath="$PROJECT_DIR$/MemoryManager/app/src/main/java/com/example/memorymanager/model/Location.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MemoryManager/app/src/main/java/com/example/memorymanager/model/TravelRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/MemoryManager/app/src/main/java/com/example/memorymanager/model/TravelRecord.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +34,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\23653\.android\avd\Pixel_9_Pro_API_35.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$/MemoryManager">
       <ProjectState />
@@ -88,6 +86,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="MIXED" />
   </component>
@@ -112,22 +115,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;F:/zwx/CS/MemoryManager/MemoryManager/app/libs/BaiduLBS_Android.jar&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "position__module",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "F:/zwx/CS/MemoryManager/MemoryManager/app/libs/BaiduLBS_Android.jar",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "Errors"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <module name="MemoryManager.app.main" />
@@ -254,7 +257,23 @@
       <option name="project" value="LOCAL" />
       <updated>1732107815606</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Created class Location;&#10;Finished class TravelRecord;&#10;Deleted deprecated class Anniversary;">
+      <option name="closed" value="true" />
+      <created>1732109319893</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1732109319893</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Configured BaiduMap SDK">
+      <option name="closed" value="true" />
+      <created>1732124639115</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1732124639115</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -273,7 +292,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="main" />
+                        <option value="position_module" />
                       </list>
                     </value>
                   </entry>
@@ -286,6 +305,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <MESSAGE value="Created class Location;&#10;Finished class TravelRecord;&#10;Deleted deprecated class Anniversary;" />
     <MESSAGE value="Configured BaiduMap SDK" />
     <option name="LAST_COMMIT_MESSAGE" value="Configured BaiduMap SDK" />
   </component>
