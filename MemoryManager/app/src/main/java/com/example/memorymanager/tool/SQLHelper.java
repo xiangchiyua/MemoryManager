@@ -14,7 +14,6 @@ import com.example.memorymanager.handle.Item;
 import com.example.memorymanager.model.AccountEvent;
 import com.example.memorymanager.model.AnniversaryEvent;
 import com.example.memorymanager.model.CommonEvent;
-import com.example.memorymanager.model.TravelRecord;
 
 import java.io.File;
 import java.text.ParseException;
@@ -30,7 +29,6 @@ public class SQLHelper extends SQLiteOpenHelper {
     private static final String TABLE_NAME_COMMONEVENT = "common_event";
     private static final String TABLE_NAME_ANNIVERSARY = "anniversary";
     private static final String TABLE_NAME_ITEM = "item";
-    private static final String TABLE_NAME_RECORD = "record";
 
     private static final String CREATE_TABLE_ACCOUNTEVENT = "create table "+TABLE_NAME_ACCOUNTEVENT+"(event_id INT PRIMARY KEY AUTOINCREMENT,\n" +
             "title VARCHAR(255) NOT NULL,\n" +
@@ -60,12 +58,6 @@ public class SQLHelper extends SQLiteOpenHelper {
             "reminder_date DATE,\n" +
             "title VARCHAR(255),\n" +
             "description TEXT)";
-    private static final String CREATE_TABLE_RECORD = "create table "+TABLE_NAME_RECORD+"(item_id INT PRIMARY KEY AUTOINCREMENT,\n" +
-            "information TEXT,\n" +
-            "time DATETIME,\n" +
-            "latitude DOUBLE,\n" +
-            "longitude DOUBLE,\n" +
-            "description TEXT)";
 
     public SQLHelper(Context context) {
         super(context, DB_NAME, null, 1);
@@ -78,7 +70,6 @@ public class SQLHelper extends SQLiteOpenHelper {
             db.execSQL(CREATE_TABLE_COMMONEVENT);
             db.execSQL(CREATE_TABLE_ANNIVERSARY);
             db.execSQL(CREATE_TABLE_ITEM);
-            db.execSQL(CREATE_TABLE_RECORD);
         }catch (SQLException e) {
             Log.e("DatabaseError", "Error creating tables: " + e.getMessage());
             e.printStackTrace();
@@ -91,45 +82,12 @@ public class SQLHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists "+TABLE_NAME_COMMONEVENT);
         db.execSQL("drop table if exists "+TABLE_NAME_ANNIVERSARY);
         db.execSQL("drop table if exists "+TABLE_NAME_ITEM);
-        db.execSQL("drop table if exists "+TABLE_NAME_RECORD);
         onCreate(db);
     }
     public static boolean isDatabaseExist(Context context, String dbName) {
         File dbFile = context.getDatabasePath(dbName);
         return dbFile.exists();
     }
-    public long insertRecord(List<TravelRecord> travelRecordList,int id) {
-        if (travelRecordList == null || travelRecordList.isEmpty()) {
-            return -1; // 返回 -1 表示列表为空或为 null
-        }
-        SQLiteDatabase db = getWritableDatabase();
-        long result = -1;
-        db.beginTransaction(); // 开启事务以提高性能
-        try {
-            for (TravelRecord record : travelRecordList) {
-                ContentValues values = new ContentValues();
-                values.put("item_id", id);
-                values.put("information", record.getInformation());
-                values.put("time", record.getTime());
-                values.put("latitude", record.getLocationLatitude());
-                values.put("longitude", record.getLocationLongitude());
-                values.put("description", record.getLocationDescription());
-                result = db.insert(TABLE_NAME_RECORD, null, values);
-                if (result == -1) {
-                    throw new Exception("插入记录失败"); // 如果插入失败，抛出异常以便回滚事务
-                }
-            }
-            db.setTransactionSuccessful(); // 设置事务成功
-        } catch (Exception e) {
-            e.printStackTrace();
-            result = -1;
-        } finally {
-            db.endTransaction();
-        }
-
-        return result;
-    }
-
     public long insertAccountEvent(AccountEvent accountEvent){
         int item_id = (int)insertItem(accountEvent.getItem());
         SQLiteDatabase db = getWritableDatabase();
@@ -144,9 +102,8 @@ public class SQLHelper extends SQLiteOpenHelper {
 
         return db.insert(TABLE_NAME_ACCOUNTEVENT,null,values);
     }
-    public long insertCommonEvent(CommonEvent commonEvent,List<TravelRecord> travelRecordList){
+    public long insertCommonEvent(CommonEvent commonEvent){
         int item_id = (int)insertItem(commonEvent.getItem());
-        insertRecord(travelRecordList,item_id);
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -199,10 +156,6 @@ public class SQLHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         return db.delete(TABLE_NAME_ANNIVERSARY,"item_id = ?",new String[]{String.valueOf(id)});
     }
-    public long deleteRecordById(int id){
-        SQLiteDatabase db = getWritableDatabase();
-        return db.delete(TABLE_NAME_RECORD,"item_id = ?",new String[]{String.valueOf(id)});
-    }
     public Item queryItem(int id){
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE_NAME_ITEM,null,"where item_id = ?",new String[]{String.valueOf(id)},
@@ -224,7 +177,9 @@ public class SQLHelper extends SQLiteOpenHelper {
                 item = new Item(date,title,description,id);
                 cursor.close();
                 db.close();
+                
             }
+
         }
         return item;
     }
@@ -342,31 +297,6 @@ public class SQLHelper extends SQLiteOpenHelper {
             db.close();
         }
         return AnniversaryList;
-    }
-    public List<TravelRecord>queryRecord(int id){
-        SQLiteDatabase db = getWritableDatabase();
-        List<TravelRecord> RecordList = new ArrayList<>();
-        Cursor cursor = db.query(TABLE_NAME_RECORD,null,"where item_id = ?",new String[]{String.valueOf(id)},
-                null,null,null);
-        if(cursor != null){
-            while(cursor.moveToNext()){
-                String information = cursor.getString(cursor.getColumnIndexOrThrow("information"));
-                String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
-                String date = cursor.getString(cursor.getColumnIndexOrThrow("time"));
-                double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow("latitude"));
-                double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow("longitude"));
-
-                TravelRecord record = new TravelRecord();
-                record.setInformation(information);
-                record.setLocationDescription(description);
-                record.setLocationLatitude(latitude);
-                record.setLocationLongitude(longitude);
-                record.setTime(date);
-            }
-            cursor.close();
-            db.close();
-        }
-        return RecordList;
     }
 
 

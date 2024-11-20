@@ -1,0 +1,404 @@
+Index: MemoryManager/app/src/main/java/com/example/memorymanager/tool/SQLHelper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.memorymanager.tool;\r\n\r\nimport android.content.ContentValues;\r\nimport android.content.Context;\r\nimport android.database.Cursor;\r\nimport android.database.SQLException;\r\nimport android.database.sqlite.SQLiteDatabase;\r\nimport android.database.sqlite.SQLiteOpenHelper;\r\nimport android.util.Log;\r\n\r\nimport com.example.memorymanager.enums.type;\r\nimport com.example.memorymanager.handle.Event;\r\nimport com.example.memorymanager.handle.Item;\r\nimport com.example.memorymanager.model.AccountEvent;\r\nimport com.example.memorymanager.model.AnniversaryEvent;\r\nimport com.example.memorymanager.model.CommonEvent;\r\n\r\nimport java.io.File;\r\nimport java.text.ParseException;\r\nimport java.text.SimpleDateFormat;\r\nimport java.util.ArrayList;\r\nimport java.util.Date;\r\nimport java.util.List;\r\n\r\npublic class SQLHelper extends SQLiteOpenHelper {\r\n\r\n    private static final String DB_NAME = \"memory.db\";\r\n    private static final String TABLE_NAME_ACCOUNTEVENT = \"account_event\";\r\n    private static final String TABLE_NAME_COMMONEVENT = \"common_event\";\r\n    private static final String TABLE_NAME_ANNIVERSARY = \"anniversary\";\r\n    private static final String TABLE_NAME_ITEM = \"item\";\r\n\r\n    private static final String CREATE_TABLE_ACCOUNTEVENT = \"create table \"+TABLE_NAME_ACCOUNTEVENT+\"(event_id INT PRIMARY KEY AUTOINCREMENT,\\n\" +\r\n            \"title VARCHAR(255) NOT NULL,\\n\" +\r\n            \"is_recurring BOOLEAN NOT NULL,\\n\" +\r\n            \"date DATE,\\n\" +\r\n            \"description TEXT,\\n\" +\r\n            \"item_id INT,\\n \"+\r\n            \"money INT NOT NULL,\\n\" +\r\n            \"FOREIGN KEY (item_id) REFERENCES Item(item_id) ON DELETE SET NULL)\";\r\n    private static final String CREATE_TABLE_COMMONEVENT = \"create table \"+TABLE_NAME_COMMONEVENT+\"(event_id INT PRIMARY KEY AUTOINCREMENT,\\n\" +\r\n            \"title VARCHAR(255) NOT NULL,\\n\" +\r\n            \"is_recurring BOOLEAN NOT NULL,\\n\" +\r\n            \"date DATE,\\n\" +\r\n            \"description TEXT,\\n\" +\r\n            \"item_id INT,\\n \"+\r\n            \"type VARCHAR(50),\\n\" +\r\n            \"is_finish BOOLEAN,\\n\" +\r\n            \"FOREIGN KEY (item_id) REFERENCES Item(item_id) ON DELETE SET NULL)\";\r\n    private static final String CREATE_TABLE_ANNIVERSARY = \"create table \"+TABLE_NAME_ANNIVERSARY+\"(event_id INT PRIMARY KEY AUTOINCREMENT,\\n\" +\r\n            \"title VARCHAR(255) NOT NULL,\\n\" +\r\n            \"is_recurring BOOLEAN NOT NULL,\\n\" +\r\n            \"date DATE,\\n\" +\r\n            \"description TEXT,\\n\" +\r\n            \"item_id INT,\\n \"+\r\n            \"FOREIGN KEY (item_id) REFERENCES Item(item_id) ON DELETE SET NULL)\";\r\n    private static final String CREATE_TABLE_ITEM = \"create table \"+TABLE_NAME_ITEM+\"(item_id INT PRIMARY KEY AUTOINCREMENT,\\n\" +\r\n            \"reminder_date DATE,\\n\" +\r\n            \"title VARCHAR(255),\\n\" +\r\n            \"description TEXT)\";\r\n\r\n    public SQLHelper(Context context) {\r\n        super(context, DB_NAME, null, 1);\r\n    }\r\n\r\n    @Override\r\n    public void onCreate(SQLiteDatabase db) {\r\n        try{\r\n            db.execSQL(CREATE_TABLE_ACCOUNTEVENT);\r\n            db.execSQL(CREATE_TABLE_COMMONEVENT);\r\n            db.execSQL(CREATE_TABLE_ANNIVERSARY);\r\n            db.execSQL(CREATE_TABLE_ITEM);\r\n        }catch (SQLException e) {\r\n            Log.e(\"DatabaseError\", \"Error creating tables: \" + e.getMessage());\r\n            e.printStackTrace();\r\n        }\r\n\r\n    }\r\n    @Override\r\n    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {\r\n        db.execSQL(\"drop table if exists \"+TABLE_NAME_ACCOUNTEVENT);\r\n        db.execSQL(\"drop table if exists \"+TABLE_NAME_COMMONEVENT);\r\n        db.execSQL(\"drop table if exists \"+TABLE_NAME_ANNIVERSARY);\r\n        db.execSQL(\"drop table if exists \"+TABLE_NAME_ITEM);\r\n        onCreate(db);\r\n    }\r\n    public static boolean isDatabaseExist(Context context, String dbName) {\r\n        File dbFile = context.getDatabasePath(dbName);\r\n        return dbFile.exists();\r\n    }\r\n    public long insertAccountEvent(AccountEvent accountEvent){\r\n        SQLiteDatabase db = getWritableDatabase();\r\n\r\n        ContentValues values = new ContentValues();\r\n        values.put(\"title\",accountEvent.getTitle());\r\n        values.put(\"is_recurring\",accountEvent.isRecurring());\r\n        values.put(\"date\",accountEvent.getDate().toString());\r\n        values.put(\"description\",accountEvent.getDescription());\r\n        values.put(\"item_id\",accountEvent.getItem().getId());\r\n        values.put(\"money\",accountEvent.getMoney());\r\n\r\n        return db.insert(TABLE_NAME_ACCOUNTEVENT,null,values);\r\n    }\r\n    public long insertCommonEvent(CommonEvent commonEvent){\r\n        SQLiteDatabase db = getWritableDatabase();\r\n\r\n        ContentValues values = new ContentValues();\r\n        values.put(\"title\",commonEvent.getTitle());\r\n        values.put(\"is_recurring\",commonEvent.isRecurring());\r\n        values.put(\"date\",commonEvent.getDate().toString());\r\n        values.put(\"description\",commonEvent.getDescription());\r\n        values.put(\"item_id\",commonEvent.getItem().getId());\r\n        values.put(\"type\",commonEvent.getType());\r\n        values.put(\"is_finish\",commonEvent.isFinish());\r\n\r\n        return db.insert(TABLE_NAME_COMMONEVENT,null,values);\r\n    }\r\n    public long insertAnniversary(AnniversaryEvent anniversary){\r\n        SQLiteDatabase db = getWritableDatabase();\r\n\r\n        ContentValues values = new ContentValues();\r\n        values.put(\"title\",anniversary.getTitle());\r\n        values.put(\"is_recurring\",anniversary.isRecurring());\r\n        values.put(\"date\",anniversary.getDate().toString());\r\n        values.put(\"description\",anniversary.getDescription());\r\n        values.put(\"item_id\",anniversary.getItem().getId());\r\n\r\n        return db.insert(TABLE_NAME_ANNIVERSARY,null,values);\r\n    }\r\n    public long insertItem(Item item){\r\n        SQLiteDatabase db = getWritableDatabase();\r\n\r\n        ContentValues values = new ContentValues();\r\n        values.put(\"reminder_date\",item.getReminderDate().toString());\r\n        values.put(\"title\",item.getTitle());\r\n        values.put(\"description\",item.getDescription());\r\n\r\n        return db.insert(TABLE_NAME_ITEM,null,values);\r\n    }\r\n    public long deleteItemById(int id){\r\n        SQLiteDatabase db = getWritableDatabase();\r\n        return db.delete(TABLE_NAME_ITEM,\"item_id = ?\",new String[]{String.valueOf(id)});\r\n    }\r\n    public long deleteAccountEventById(int id){\r\n        SQLiteDatabase db = getWritableDatabase();\r\n        return db.delete(TABLE_NAME_ACCOUNTEVENT,\"item_id = ?\",new String[]{String.valueOf(id)});\r\n    }\r\n    public long deleteCommonEventById(int id){\r\n        SQLiteDatabase db = getWritableDatabase();\r\n        return db.delete(TABLE_NAME_COMMONEVENT,\"item_id = ?\",new String[]{String.valueOf(id)});\r\n    }\r\n    public long deleteAnniversaryById(int id){\r\n        SQLiteDatabase db = getWritableDatabase();\r\n        return db.delete(TABLE_NAME_ANNIVERSARY,\"item_id = ?\",new String[]{String.valueOf(id)});\r\n    }\r\n    public Item queryItem(int id){\r\n        SQLiteDatabase db = getWritableDatabase();\r\n        Cursor cursor = db.query(TABLE_NAME_ITEM,new String[]{},\"where item_id = ?\",new String[]{\"id\"},\r\n                null,null,null);\r\n        Item item = null;\r\n        if(cursor != null){\r\n            while(cursor.moveToNext()){\r\n                SimpleDateFormat ft = new SimpleDateFormat(\"yyyy-MM-dd\");\r\n                String date_str = cursor.getString(cursor.getColumnIndexOrThrow(\"reminder_date\"));\r\n                Date date;\r\n                try {\r\n                    date = ft.parse(date_str);\r\n                } catch (ParseException e) {\r\n                    throw new RuntimeException(e);\r\n                }\r\n                String title = cursor.getString(cursor.getColumnIndexOrThrow(\"title\"));\r\n                String description = cursor.getString(cursor.getColumnIndexOrThrow(\"description\"));\r\n\r\n                item = new Item(date,title,description,id);\r\n                cursor.close();\r\n                db.close();\r\n                \r\n            }\r\n\r\n        }\r\n        return item;\r\n    }\r\n    public List<Event> queryAccountEvent(){\r\n        SQLiteDatabase db = getWritableDatabase();\r\n        List<Event> AccountEventList = new ArrayList<>();\r\n        Cursor cursor = db.query(TABLE_NAME_ACCOUNTEVENT,new String[]{},\"\",new String[]{},\r\n                null,null,null);\r\n\r\n        if(cursor != null){\r\n            while(cursor.moveToNext()){\r\n                String title = cursor.getString(cursor.getColumnIndexOrThrow(\"title\"));\r\n                int isRecurring_int = cursor.getInt(cursor.getColumnIndexOrThrow(\"is_recurring\"));\r\n                boolean isRecurring = false;\r\n                if(isRecurring_int==1) isRecurring = true;\r\n                SimpleDateFormat ft = new SimpleDateFormat(\"yyyy-MM-dd\");\r\n                String date_str = cursor.getString(cursor.getColumnIndexOrThrow(\"date\"));\r\n                Date date;\r\n                try {\r\n                    date = ft.parse(date_str);\r\n                } catch (ParseException e) {\r\n                    throw new RuntimeException(e);\r\n                }\r\n                String description = cursor.getString(cursor.getColumnIndexOrThrow(\"description\"));\r\n                int item_id = cursor.getInt(cursor.getColumnIndexOrThrow(\"item_id\"));\r\n                int money = cursor.getInt(cursor.getColumnIndexOrThrow(\"money\"));\r\n\r\n                AccountEvent accountEvent = new AccountEvent();\r\n                Item item = queryItem(item_id);\r\n                accountEvent.setItem(item);\r\n                accountEvent.setMoney(money);\r\n                accountEvent.setDescription(description);\r\n                accountEvent.setDate(date);\r\n                accountEvent.setTitle(title);\r\n                accountEvent.setRecurring(isRecurring);\r\n                AccountEventList.add(accountEvent);\r\n            }\r\n            cursor.close();\r\n            db.close();\r\n        }\r\n        return AccountEventList;\r\n    }\r\n    public List<Event>queryCommonEvent(){\r\n        SQLiteDatabase db = getWritableDatabase();\r\n        List<Event> CommonEventList = new ArrayList<>();\r\n\r\n        return CommonEventList;\r\n    }\r\n    public List<Event>queryAnniversary(){\r\n        SQLiteDatabase db = getWritableDatabase();\r\n        List<Event> AnniversaryList = new ArrayList<>();\r\n\r\n        return AnniversaryList;\r\n    }\r\n\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/MemoryManager/app/src/main/java/com/example/memorymanager/tool/SQLHelper.java b/MemoryManager/app/src/main/java/com/example/memorymanager/tool/SQLHelper.java
+--- a/MemoryManager/app/src/main/java/com/example/memorymanager/tool/SQLHelper.java	(revision 12de860d7bafa77d6caa310a0e7d9975ca76cde1)
++++ b/MemoryManager/app/src/main/java/com/example/memorymanager/tool/SQLHelper.java	(date 1732123239570)
+@@ -89,6 +89,7 @@
+         return dbFile.exists();
+     }
+     public long insertAccountEvent(AccountEvent accountEvent){
++        int item_id = (int)insertItem(accountEvent.getItem());
+         SQLiteDatabase db = getWritableDatabase();
+ 
+         ContentValues values = new ContentValues();
+@@ -96,12 +97,13 @@
+         values.put("is_recurring",accountEvent.isRecurring());
+         values.put("date",accountEvent.getDate().toString());
+         values.put("description",accountEvent.getDescription());
+-        values.put("item_id",accountEvent.getItem().getId());
++        values.put("item_id",item_id);
+         values.put("money",accountEvent.getMoney());
+ 
+         return db.insert(TABLE_NAME_ACCOUNTEVENT,null,values);
+     }
+     public long insertCommonEvent(CommonEvent commonEvent){
++        int item_id = (int)insertItem(commonEvent.getItem());
+         SQLiteDatabase db = getWritableDatabase();
+ 
+         ContentValues values = new ContentValues();
+@@ -109,13 +111,14 @@
+         values.put("is_recurring",commonEvent.isRecurring());
+         values.put("date",commonEvent.getDate().toString());
+         values.put("description",commonEvent.getDescription());
+-        values.put("item_id",commonEvent.getItem().getId());
++        values.put("item_id",item_id);
+         values.put("type",commonEvent.getType());
+         values.put("is_finish",commonEvent.isFinish());
+ 
+         return db.insert(TABLE_NAME_COMMONEVENT,null,values);
+     }
+     public long insertAnniversary(AnniversaryEvent anniversary){
++        int item_id = (int)insertItem(anniversary.getItem());
+         SQLiteDatabase db = getWritableDatabase();
+ 
+         ContentValues values = new ContentValues();
+@@ -123,7 +126,7 @@
+         values.put("is_recurring",anniversary.isRecurring());
+         values.put("date",anniversary.getDate().toString());
+         values.put("description",anniversary.getDescription());
+-        values.put("item_id",anniversary.getItem().getId());
++        values.put("item_id",item_id);
+ 
+         return db.insert(TABLE_NAME_ANNIVERSARY,null,values);
+     }
+@@ -155,12 +158,12 @@
+     }
+     public Item queryItem(int id){
+         SQLiteDatabase db = getWritableDatabase();
+-        Cursor cursor = db.query(TABLE_NAME_ITEM,new String[]{},"where item_id = ?",new String[]{"id"},
++        Cursor cursor = db.query(TABLE_NAME_ITEM,null,"where item_id = ?",new String[]{String.valueOf(id)},
+                 null,null,null);
+         Item item = null;
+         if(cursor != null){
+             while(cursor.moveToNext()){
+-                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
++                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                 String date_str = cursor.getString(cursor.getColumnIndexOrThrow("reminder_date"));
+                 Date date;
+                 try {
+@@ -183,7 +186,7 @@
+     public List<Event> queryAccountEvent(){
+         SQLiteDatabase db = getWritableDatabase();
+         List<Event> AccountEventList = new ArrayList<>();
+-        Cursor cursor = db.query(TABLE_NAME_ACCOUNTEVENT,new String[]{},"",new String[]{},
++        Cursor cursor = db.query(TABLE_NAME_ACCOUNTEVENT,null,null,null,
+                 null,null,null);
+ 
+         if(cursor != null){
+@@ -192,7 +195,7 @@
+                 int isRecurring_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_recurring"));
+                 boolean isRecurring = false;
+                 if(isRecurring_int==1) isRecurring = true;
+-                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
++                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                 String date_str = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                 Date date;
+                 try {
+@@ -222,13 +225,77 @@
+     public List<Event>queryCommonEvent(){
+         SQLiteDatabase db = getWritableDatabase();
+         List<Event> CommonEventList = new ArrayList<>();
++        Cursor cursor = db.query(TABLE_NAME_COMMONEVENT,null,null,null,
++                null,null,null);
++        if(cursor != null){
++            while(cursor.moveToNext()){
++                String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
++                int isRecurring_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_recurring"));
++                boolean isRecurring = false;
++                if(isRecurring_int==1) isRecurring = true;
++                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
++                String date_str = cursor.getString(cursor.getColumnIndexOrThrow("date"));
++                Date date;
++                try {
++                    date = ft.parse(date_str);
++                } catch (ParseException e) {
++                    throw new RuntimeException(e);
++                }
++                String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
++                int item_id = cursor.getInt(cursor.getColumnIndexOrThrow("item_id"));
++                int is_finish_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_finish"));
++                boolean is_finish = false;
++                if(is_finish_int==1) is_finish = true;
+ 
++                CommonEvent commonEvent = new CommonEvent();
++                Item item = queryItem(item_id);
++                commonEvent.setItem(item);
++                commonEvent.setDescription(description);
++                commonEvent.setDate(date);
++                commonEvent.setTitle(title);
++                commonEvent.setRecurring(isRecurring);
++                commonEvent.setFinish(is_finish);
++                CommonEventList.add(commonEvent);
++            }
++            cursor.close();
++            db.close();
++        }
+         return CommonEventList;
+     }
+     public List<Event>queryAnniversary(){
+         SQLiteDatabase db = getWritableDatabase();
+         List<Event> AnniversaryList = new ArrayList<>();
++        Cursor cursor = db.query(TABLE_NAME_ANNIVERSARY,null,null,null,
++                null,null,null);
++        if(cursor != null){
++            while(cursor.moveToNext()){
++                String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
++                int isRecurring_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_recurring"));
++                boolean isRecurring = false;
++                if(isRecurring_int==1) isRecurring = true;
++                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
++                String date_str = cursor.getString(cursor.getColumnIndexOrThrow("date"));
++                Date date;
++                try {
++                    date = ft.parse(date_str);
++                } catch (ParseException e) {
++                    throw new RuntimeException(e);
++                }
++                String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
++                int item_id = cursor.getInt(cursor.getColumnIndexOrThrow("item_id"));
+ 
++                AnniversaryEvent anniversary = new AnniversaryEvent();
++                Item item = queryItem(item_id);
++                anniversary.setItem(item);
++                anniversary.setDescription(description);
++                anniversary.setDate(date);
++                anniversary.setTitle(title);
++                anniversary.setRecurring(isRecurring);
++                AnniversaryList.add(anniversary);
++            }
++            cursor.close();
++            db.close();
++        }
+         return AnniversaryList;
+     }
+ 
+Index: MemoryManager/app/src/main/java/com/example/memorymanager/controller/EventManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.memorymanager.controller;\r\n\r\nimport static android.content.ContentValues.TAG;\r\n\r\nimport android.content.Context;\r\nimport android.database.sqlite.SQLiteDatabase;\r\nimport android.util.Log;\r\n\r\nimport com.example.memorymanager.handle.Event;\r\nimport com.example.memorymanager.enums.type;\r\nimport com.example.memorymanager.model.AccountEvent;\r\nimport com.example.memorymanager.model.AnniversaryEvent;\r\nimport com.example.memorymanager.model.CommonEvent;\r\nimport com.example.memorymanager.tool.SQLHelper;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\npublic class EventManager {\r\n    private static EventManager instance;\r\n    private List<Event> events;\r\n\r\n    private EventManager() {\r\n        events = new ArrayList<>();\r\n    }\r\n    Context context;\r\n    SQLHelper sqlHelper;\r\n    SQLiteDatabase db;\r\n    public void initialize(Context context) {\r\n        this.context = context.getApplicationContext(); // 避免内存泄漏\r\n        sqlHelper = new SQLHelper(this.context); // 初始化 SQLHelper\r\n    }\r\n\r\n    public void checkDatabase() {\r\n        db = sqlHelper.getWritableDatabase();\r\n        if (sqlHelper.isDatabaseExist(context, \"memory.db\")) {\r\n            Log.e(TAG, \"checkDatabase: checked\");\r\n        } else {\r\n            sqlHelper.onCreate(db);\r\n            Log.e(TAG, \"checkDatabase: can not find database\");\r\n        }\r\n    }\r\n\r\n\r\n    public static EventManager getInstance() {\r\n        if (instance == null) {\r\n            instance = new EventManager();\r\n        }\r\n        return instance;\r\n    }\r\n\r\n    public void addEvent(Event event) {\r\n        type type = event.getItem().getType();\r\n        sqlHelper.insertItem(event.getItem());\r\n        switch (type){\r\n            case AccountEvent : sqlHelper.insertAccountEvent((AccountEvent) event);\r\n            case CommonEvent : sqlHelper.insertCommonEvent((CommonEvent) event);\r\n            case Anniversary : sqlHelper.insertAnniversary((AnniversaryEvent) event);\r\n        }\r\n    }\r\n\r\n    public void removeEvent(Event event) {\r\n        type type = event.getItem().getType();\r\n        sqlHelper.deleteItemById(event.getItem().getId());\r\n        switch (type){\r\n            case AccountEvent : sqlHelper.deleteAccountEventById(event.getItem().getId());\r\n            case CommonEvent : sqlHelper.deleteCommonEventById(event.getItem().getId());\r\n            case Anniversary : sqlHelper.deleteAnniversaryById(event.getItem().getId());\r\n        }\r\n    }\r\n\r\n    public void updateEvent() {\r\n\r\n    }\r\n\r\n    public List<Event> getEvent() {\r\n        events.addAll(sqlHelper.queryAccountEvent());\r\n        events.addAll(sqlHelper.queryCommonEvent());\r\n        events.addAll(sqlHelper.queryAnniversary());\r\n        return events;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/MemoryManager/app/src/main/java/com/example/memorymanager/controller/EventManager.java b/MemoryManager/app/src/main/java/com/example/memorymanager/controller/EventManager.java
+--- a/MemoryManager/app/src/main/java/com/example/memorymanager/controller/EventManager.java	(revision 12de860d7bafa77d6caa310a0e7d9975ca76cde1)
++++ b/MemoryManager/app/src/main/java/com/example/memorymanager/controller/EventManager.java	(date 1732123239529)
+@@ -51,7 +51,7 @@
+ 
+     public void addEvent(Event event) {
+         type type = event.getItem().getType();
+-        sqlHelper.insertItem(event.getItem());
++        //int item_id = (int)sqlHelper.insertItem(event.getItem());
+         switch (type){
+             case AccountEvent : sqlHelper.insertAccountEvent((AccountEvent) event);
+             case CommonEvent : sqlHelper.insertCommonEvent((CommonEvent) event);
+Index: MemoryManager/app/build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    alias(libs.plugins.android.application)\r\n}\r\n\r\nandroid {\r\n    namespace = \"com.example.memorymanager\"\r\n    compileSdk = 34\r\n\r\n    defaultConfig {\r\n        applicationId = \"com.example.memorymanager\"\r\n        minSdk = 24\r\n        targetSdk = 34\r\n        versionCode = 1\r\n        versionName = \"1.0\"\r\n\r\n        testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\"\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            isMinifyEnabled = false\r\n            proguardFiles(\r\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\r\n                \"proguard-rules.pro\"\r\n            )\r\n        }\r\n    }\r\n\r\n    compileOptions {\r\n        sourceCompatibility = JavaVersion.VERSION_1_8\r\n        targetCompatibility = JavaVersion.VERSION_1_8\r\n    }\r\n\r\n    dataBinding{\r\n        enable=true\r\n    }\r\n\r\n    buildFeatures {\r\n        viewBinding = true\r\n    }\r\n}\r\n\r\ndependencies {\r\n\r\n    implementation(libs.appcompat)\r\n    implementation(libs.material)\r\n    implementation(libs.constraintlayout)\r\n    implementation(libs.lifecycle.livedata.ktx)\r\n    implementation(libs.lifecycle.viewmodel.ktx)\r\n    implementation(libs.navigation.fragment)\r\n    implementation(libs.navigation.ui)\r\n    implementation(libs.activity)\r\n    implementation(fileTree(mapOf(\"dir\" to \"libs\", \"include\" to listOf(\"BaiduLBS_Android.jar\"))))\r\n    testImplementation(libs.junit)\r\n    androidTestImplementation(libs.ext.junit)\r\n    androidTestImplementation(libs.espresso.core)\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/MemoryManager/app/build.gradle.kts b/MemoryManager/app/build.gradle.kts
+--- a/MemoryManager/app/build.gradle.kts	(revision 12de860d7bafa77d6caa310a0e7d9975ca76cde1)
++++ b/MemoryManager/app/build.gradle.kts	(date 1732123238909)
+@@ -6,6 +6,14 @@
+     namespace = "com.example.memorymanager"
+     compileSdk = 34
+ 
++    sourceSets {
++        sourceSets {
++            getByName("main") {
++                // 设置 JNI 本地库的路径
++                jniLibs.srcDir("libs")
++            }
++        }
++    }
+     defaultConfig {
+         applicationId = "com.example.memorymanager"
+         minSdk = 24
+@@ -50,7 +58,10 @@
+     implementation(libs.navigation.fragment)
+     implementation(libs.navigation.ui)
+     implementation(libs.activity)
+-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("BaiduLBS_Android.jar"))))
++    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
++    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
++    implementation("androidx.appcompat:appcompat:1.6.1")
++    testImplementation("junit:junit:4.12")
+     testImplementation(libs.junit)
+     androidTestImplementation(libs.ext.junit)
+     androidTestImplementation(libs.espresso.core)
+Index: .idea/deploymentTargetSelector.xml
+===================================================================
+diff --git a/.idea/deploymentTargetSelector.xml b/.idea/deploymentTargetSelector.xml
+deleted file mode 100644
+--- a/.idea/deploymentTargetSelector.xml	(revision 12de860d7bafa77d6caa310a0e7d9975ca76cde1)
++++ /dev/null	(revision 12de860d7bafa77d6caa310a0e7d9975ca76cde1)
+@@ -1,10 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="deploymentTargetSelector">
+-    <selectionStates>
+-      <SelectionState runConfigName="app">
+-        <option name="selectionMode" value="DROPDOWN" />
+-      </SelectionState>
+-    </selectionStates>
+-  </component>
+-</project>
+\ No newline at end of file
+Index: MemoryManager/build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// Top-level build file where you can add configuration options common to all sub-projects/modules.\r\nplugins {\r\n    alias(libs.plugins.android.application) apply false\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/MemoryManager/build.gradle.kts b/MemoryManager/build.gradle.kts
+--- a/MemoryManager/build.gradle.kts	(revision 12de860d7bafa77d6caa310a0e7d9975ca76cde1)
++++ b/MemoryManager/build.gradle.kts	(date 1732123239583)
+@@ -1,4 +1,4 @@
+ // Top-level build file where you can add configuration options common to all sub-projects/modules.
+ plugins {
+     alias(libs.plugins.android.application) apply false
+-}
+\ No newline at end of file
++}
+Index: MemoryManager/app/src/main/java/com/example/memorymanager/location/OnLocationReceivedCallback.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/MemoryManager/app/src/main/java/com/example/memorymanager/location/OnLocationReceivedCallback.java b/MemoryManager/app/src/main/java/com/example/memorymanager/location/OnLocationReceivedCallback.java
+new file mode 100644
+--- /dev/null	(date 1732123239540)
++++ b/MemoryManager/app/src/main/java/com/example/memorymanager/location/OnLocationReceivedCallback.java	(date 1732123239540)
+@@ -0,0 +1,7 @@
++package com.example.memorymanager.location;
++
++import com.example.memorymanager.model.Location;
++
++public interface OnLocationReceivedCallback {
++    void onLocationReceived(Location location);
++}
+Index: MemoryManager/app/src/main/java/com/example/memorymanager/location/LocationService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/MemoryManager/app/src/main/java/com/example/memorymanager/location/LocationService.java b/MemoryManager/app/src/main/java/com/example/memorymanager/location/LocationService.java
+new file mode 100644
+--- /dev/null	(date 1732123239536)
++++ b/MemoryManager/app/src/main/java/com/example/memorymanager/location/LocationService.java	(date 1732123239536)
+@@ -0,0 +1,72 @@
++package com.example.memorymanager.location;
++
++import android.content.ContentResolver;
++import android.content.Context;
++
++import com.baidu.location.BDAbstractLocationListener;
++import com.baidu.location.BDLocation;
++import com.baidu.location.LocationClient;
++import com.baidu.location.LocationClientOption;
++import com.baidu.location.LocationClientOption.*;
++import com.example.memorymanager.model.Location;
++
++public class LocationService {
++    LocationClient locationClient;
++    private final OnLocationReceivedCallback callback;
++    public LocationService(Context context, OnLocationReceivedCallback callback) {
++        this.callback = callback;
++
++        try {
++            locationClient = new LocationClient(context);
++        }catch (Exception e) {
++            e.printStackTrace();
++        }
++        LocationClientOption option = new LocationClientOption();
++        option.setLocationMode(LocationMode.Hight_Accuracy);
++        option.setCoorType("bd09ll");
++        option.setFirstLocType(FirstLocType.SPEED_IN_FIRST_LOC);
++        option.setOnceLocation(true);
++        option.setScanSpan(0);
++        option.setOpenGnss(true);
++        option.setLocationNotify(true);
++        option.setIgnoreKillProcess(false);
++        option.setIsNeedAddress(true);
++        option.setIsNeedLocationDescribe(true);
++        locationClient.setLocOption(option);
++
++        locationClient.registerLocationListener(new MyLocationListener());
++    }
++    public void start() {
++        locationClient.start();
++    }
++
++    public void stop() {
++        if(locationClient != null) {
++            locationClient.stop();
++        }
++    }
++    private class MyLocationListener extends BDAbstractLocationListener {
++        @Override
++        public void onReceiveLocation(BDLocation location){
++            //此处的BDLocation为定位结果信息类，通过它的各种get方法可获取定位相关的全部结果
++            //以下只列举部分获取经纬度相关（常用）的结果信息
++            //更多结果信息获取说明，请参照类参考中BDLocation类中的说明
++            if (location == null) return;
++            double latitude = location.getLatitude();    //获取纬度信息
++            double longitude = location.getLongitude();    //获取经度信息
++            String city = location.getCity();    //获取城市
++            String locationDescribe = location.getLocationDescribe();    //获取位置描述信息
++            String coorType = location.getCoorType();
++            //获取经纬度坐标类型，以LocationClientOption中设置过的坐标类型为准
++            int errorCode = location.getLocType();
++            //获取定位类型、定位错误返回码，具体信息可参照类参考中BDLocation类中的说明
++
++            if (callback != null) {
++                callback.onLocationReceived(new Location(latitude, longitude, city+' '+locationDescribe));
++            }
++
++            stop();
++        }
++    }
++}
++
+Index: MemoryManager/gradle.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># Project-wide Gradle settings.\r\n# IDE (e.g. Android Studio) users:\r\n# Gradle settings configured through the IDE *will override*\r\n# any settings specified in this file.\r\n# For more details on how to configure your build environment visit\r\n# http://www.gradle.org/docs/current/userguide/build_environment.html\r\n# Specifies the JVM arguments used for the daemon process.\r\n# The setting is particularly useful for tweaking memory settings.\r\norg.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8\r\n# When configured, Gradle will run in incubating parallel mode.\r\n# This option should only be used with decoupled projects. For more details, visit\r\n# https://developer.android.com/r/tools/gradle-multi-project-decoupled-projects\r\n# org.gradle.parallel=true\r\n# AndroidX package structure to make it clearer which packages are bundled with the\r\n# Android operating system, and which are packaged with your app's APK\r\n# https://developer.android.com/topic/libraries/support-library/androidx-rn\r\nandroid.useAndroidX=true\r\n# Enables namespacing of each library's R class so that its R class includes only the\r\n# resources declared in the library itself and none from the library's dependencies,\r\n# thereby reducing the size of the R class for that library\r\nandroid.nonTransitiveRClass=true
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/MemoryManager/gradle.properties b/MemoryManager/gradle.properties
+--- a/MemoryManager/gradle.properties	(revision 12de860d7bafa77d6caa310a0e7d9975ca76cde1)
++++ b/MemoryManager/gradle.properties	(date 1732123239593)
+@@ -15,6 +15,8 @@
+ # Android operating system, and which are packaged with your app's APK
+ # https://developer.android.com/topic/libraries/support-library/androidx-rn
+ android.useAndroidX=true
++android.enableJetifier=true
++
+ # Enables namespacing of each library's R class so that its R class includes only the
+ # resources declared in the library itself and none from the library's dependencies,
+ # thereby reducing the size of the R class for that library
+Index: MemoryManager/app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    package = \"com.example.memorymanager\">\r\n    <uses-permission android:name=\"android.permission.INTERNET\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\" />\r\n    <uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />\r\n    <uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>\r\n    <uses-permission android:name=\"android.permission.WRITE_SETTINGS\" tools:ignore=\"ProtectedPermissions\" />\r\n    <uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\" />\r\n    <uses-permission android:name=\"android.permission.INTERNET\" />\r\n\r\n    <uses-permission android:name=\"android.permission.BLUETOOTH\" />\r\n    <uses-permission android:name=\"android.permission.BLUETOOTH_ADMIN\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />\r\n\r\n    <uses-permission android:name=\"android.permission.INTERNET\"/>\r\n\r\n    <uses-permission android:name=\"android.permission.BLUETOOTH\" />\r\n    <uses-permission android:name=\"android.permission.BLUETOOTH_ADMIN\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />\r\n\r\n    <application\r\n        android:allowBackup=\"true\"\r\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\r\n        android:fullBackupContent=\"@xml/backup_rules\"\r\n        android:icon=\"@mipmap/ic_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/Theme.MemoryManager\"\r\n        tools:targetApi=\"31\">\r\n        <activity\r\n            android:name=\".Activity_ItemSelect\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".Activity_EventInfo\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".Activity_ItemType\"\r\n            android:exported=\"false\"\r\n            android:label=\"@string/title_activity_item_type\" />\r\n        <activity\r\n            android:name=\".Activity_SetEvent\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".Activity_Select\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".Activity_Type\"\r\n            android:exported=\"false\"\r\n            android:label=\"@string/title_activity_type\"\r\n            android:theme=\"@style/Theme.MemoryManager.NoActionBar\" />\r\n        <activity\r\n            android:name=\".Activity_Title\"\r\n            android:exported=\"true\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n        </activity>\r\n    </application>\r\n\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/MemoryManager/app/src/main/AndroidManifest.xml b/MemoryManager/app/src/main/AndroidManifest.xml
+--- a/MemoryManager/app/src/main/AndroidManifest.xml	(revision 12de860d7bafa77d6caa310a0e7d9975ca76cde1)
++++ b/MemoryManager/app/src/main/AndroidManifest.xml	(date 1732123239522)
+@@ -65,6 +65,14 @@
+                 <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
+         </activity>
++        <meta-data
++            android:name="com.baidu.lbsapi.API_KEY"
++            android:value="eoN58SnkMIiyLXe3un6q8qwYurGssVpg" />
++        <service
++            android:name="com.baidu.location.f"
++            android:enabled="true"
++            android:process=":remote" >
++        </service>
+     </application>
+ 
+ </manifest>
+\ No newline at end of file

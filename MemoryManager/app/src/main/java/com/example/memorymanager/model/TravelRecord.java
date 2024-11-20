@@ -12,8 +12,8 @@ public class TravelRecord {
 
     public TravelRecord() {
     }
-    public TravelRecord(Location location, String information, String time, int id) {
-        this.location = location;
+    public TravelRecord(double latitude, double longitude, String description, String information, String time, int id) {
+        this.location = new Location(longitude,latitude,description);
         this.information = information;
         this.time = time;
         this.id = id;
@@ -31,12 +31,6 @@ public class TravelRecord {
         return location.getDescription();
     }
 
-    public void setLocationDescription(String description) {
-        this.location.setDescription(description);
-    }
-
-    public double getLocationLatitude() { return location.getLatitude(); }
-
     public void setLocationLatitude(double latitude) { this.location.setLatitude(latitude); }
 
     public double getLocationLongitude() { return location.getLongitude(); }
@@ -45,6 +39,12 @@ public class TravelRecord {
     public String getInformation() {
         return information;
     }
+
+    public void setLocationDescription(String description) {
+        this.location.setDescription(description);
+    }
+
+    public double getLocationLatitude() { return location.getLatitude(); }
 
     public void setInformation(String information) {
         this.information = information;
