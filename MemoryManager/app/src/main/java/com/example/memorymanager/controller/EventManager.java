@@ -11,6 +11,7 @@ import com.example.memorymanager.enums.type;
 import com.example.memorymanager.model.AccountEvent;
 import com.example.memorymanager.model.AnniversaryEvent;
 import com.example.memorymanager.model.CommonEvent;
+import com.example.memorymanager.model.TravelRecord;
 import com.example.memorymanager.tool.SQLHelper;
 
 import java.util.ArrayList;
@@ -49,12 +50,12 @@ public class EventManager {
         return instance;
     }
 
-    public void addEvent(Event event) {
+    public void addEvent(Event event,List<TravelRecord> travelRecordList) {
         type type = event.getItem().getType();
         //int item_id = (int)sqlHelper.insertItem(event.getItem());
         switch (type){
             case AccountEvent : sqlHelper.insertAccountEvent((AccountEvent) event);
-            case CommonEvent : sqlHelper.insertCommonEvent((CommonEvent) event);
+            case CommonEvent : sqlHelper.insertCommonEvent((CommonEvent) event,travelRecordList);
             case Anniversary : sqlHelper.insertAnniversary((AnniversaryEvent) event);
         }
     }
@@ -62,6 +63,7 @@ public class EventManager {
     public void removeEvent(Event event) {
         type type = event.getItem().getType();
         sqlHelper.deleteItemById(event.getItem().getId());
+        sqlHelper.deleteRecordById(event.getItem().getId());
         switch (type){
             case AccountEvent : sqlHelper.deleteAccountEventById(event.getItem().getId());
             case CommonEvent : sqlHelper.deleteCommonEventById(event.getItem().getId());

@@ -54,9 +54,7 @@ public class TravelRecord {
         return time;
     }
 
-    public void setTime(Date time_) {
-        SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss");
-        String time = ft.format(time_);
+    public void setTime(String time) {
         this.time = time;
     }
 }
