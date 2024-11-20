@@ -9,7 +9,12 @@ public class Item {
     private String description;
     private int id;
     private type type;
-
+    public Item(Date reminderDate, String title, String description, int id) {
+        this.reminderDate = reminderDate;
+        this.title = title;
+        this.description = description;
+        this.id = id;
+    }
     public Item(Date reminderDate, String title, String description, int id, com.example.memorymanager.enums.type type) {
         this.reminderDate = reminderDate;
         this.title = title;
