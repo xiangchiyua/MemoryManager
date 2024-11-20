@@ -153,7 +153,33 @@ public class SQLHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         return db.delete(TABLE_NAME_ANNIVERSARY,"item_id = ?",new String[]{String.valueOf(id)});
     }
+    public Item queryItem(int id){
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.query(TABLE_NAME_ITEM,new String[]{},"where item_id = ?",new String[]{"id"},
+                null,null,null);
+        Item item = null;
+        if(cursor != null){
+            while(cursor.moveToNext()){
+                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                String date_str = cursor.getString(cursor.getColumnIndexOrThrow("reminder_date"));
+                Date date;
+                try {
+                    date = ft.parse(date_str);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+                String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+                String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
 
+                item = new Item(date,title,description,id);
+                cursor.close();
+                db.close();
+                
+            }
+
+        }
+        return item;
+    }
     public List<Event> queryAccountEvent(){
         SQLiteDatabase db = getWritableDatabase();
         List<Event> AccountEventList = new ArrayList<>();
@@ -179,7 +205,7 @@ public class SQLHelper extends SQLiteOpenHelper {
                 int money = cursor.getInt(cursor.getColumnIndexOrThrow("money"));
 
                 AccountEvent accountEvent = new AccountEvent();
-                Item item = new Item(date,title,description,item_id, type.AccountEvent);
+                Item item = queryItem(item_id);
                 accountEvent.setItem(item);
                 accountEvent.setMoney(money);
                 accountEvent.setDescription(description);
