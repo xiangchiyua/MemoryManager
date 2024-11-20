@@ -62,6 +62,10 @@ public class LocationService {
             int errorCode = location.getLocType();
             //获取定位类型、定位错误返回码，具体信息可参照类参考中BDLocation类中的说明
 
+            if (city == null) city = "武汉市";
+            if (locationDescribe == null) locationDescribe = "武汉大学计算机学院";
+
+
             if (callback != null) {
                 callback.onLocationReceived(new Location(latitude, longitude, city+' '+locationDescribe));
             }
