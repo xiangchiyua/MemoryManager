@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.memorymanager.handle.*;
+import com.example.memorymanager.model.TravelRecord;
 import com.example.memorymanager.ui.tools.PagesName;
 import com.example.memorymanager.ui.tools.TemporaryAction;
 
@@ -59,53 +60,33 @@ public class Activity_EventInfo extends AppCompatActivity {
         layout_info=(LinearLayout)findViewById(R.id.linear_layout_eventInfo_page_eventInfo);
 
         //连接数据库获取相应事件的info列表
-        List<String>infoList=getInfoOfEvent(event);
+        List<TravelRecord>infoList=getInfoOfEvent(event);
 
         textView_title.setText(event.getTitle());
         textView_type.setText(event.getItem().getType().name());
         textView_date.setText(event.getDate().toString());
 
-        for (String info: infoList) {
+        for (TravelRecord info: infoList) {
             addEventInfo(info);
         }
     }
 
     //unfinished
     //连接数据库获取相应事件的info列表
-    private List<String> getInfoOfEvent(Event event){
+    private List<TravelRecord> getInfoOfEvent(Event event){
         if(event==null)
-            return new ArrayList<String>();
+            return new ArrayList<TravelRecord>();
         int eventId=event.getItem().getId();
 
-        //待修改
-        List<String>result=test();
-        return result;
-    }
-
-
-    //待删
-    private List<String> test(){
-        List<String>result=new ArrayList<>();
-        result.add("information 1");
-        result.add("information 2");
-        result.add("information 3");
-        result.add("information 4");
-        result.add("information 5");
-        result.add("information 6");
-        result.add("information 7");
-        result.add("information 8");
-        result.add("information 9");
-        result.add("information 10");
-        result.add("information 11");
-        result.add("information 12");
+        List<TravelRecord>result=TemporaryAction.getEventManager().getRecord(eventId);
         return result;
     }
 
 
     //向事件信息列表容器中添加一条记录
-    private void addEventInfo(String info){
+    private void addEventInfo(TravelRecord info){
         TextView textDate=new TextView(this);
-        textDate.setText("Date;");
+        textDate.setText(info.getTime());
         textDate.setTextSize(20);
         textDate.setWidth(200);
         textDate.setHeight(200);
@@ -113,7 +94,7 @@ public class Activity_EventInfo extends AppCompatActivity {
 
         TextView textInfo =new TextView(this);
         textInfo.setWidth(690);
-        textInfo.setText(info);
+        textInfo.setText(info.getInformation());
         textInfo.setTextSize(20);
         textInfo.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
 

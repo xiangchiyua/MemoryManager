@@ -18,8 +18,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.memorymanager.enums.type;
+import com.example.memorymanager.handle.Event;
 import com.example.memorymanager.location.LocationService;
+import com.example.memorymanager.model.AccountEvent;
+import com.example.memorymanager.model.CommonEvent;
 import com.example.memorymanager.model.Location;
+import com.example.memorymanager.model.TravelRecord;
 import com.example.memorymanager.ui.Dialog.Dialog_SetNotification;
 import com.example.memorymanager.ui.tools.PagesName;
 import com.example.memorymanager.ui.tools.TemporaryAction;
@@ -44,6 +48,10 @@ public class Activity_SetEvent extends AppCompatActivity {
     RadioButton radioButtonUndo;
     RadioButton radioButtonFinished;
 
+    EditText editText_extraInfo;
+
+    //本界面处理的事件
+    Event event=null;
     //装载所有消息添加控件的容器
     LinearLayout layoutAllInfo;
     //装载所有添加消息（EditText控件）
@@ -68,8 +76,17 @@ public class Activity_SetEvent extends AppCompatActivity {
             Toast.makeText(Activity_SetEvent.this,TemporaryAction.getLocation().getDescription(),Toast.LENGTH_LONG).show();
         });
 
+
+        event=TemporaryAction.getEventToShow();
         //初始化标题输入框
         editText_title=(EditText)findViewById(R.id.editText_set_title);
+        if(event!=null){
+            editText_title.setText(event.getTitle());
+            if(event.getClass()== AccountEvent.class)
+                editText_extraInfo.setText(String.valueOf(((AccountEvent)event).getMoney()));
+            else if(event.getClass()== CommonEvent.class)
+                editText_extraInfo.setText(((CommonEvent)event).getType());
+        }
         //初始化返回按钮
         Button button_back=(Button)findViewById(R.id.button_backFrom_page_setEvent);
         button_back.setOnClickListener(skipToPage(TemporaryAction.getPriorPage()));
@@ -87,21 +104,24 @@ public class Activity_SetEvent extends AppCompatActivity {
         radioButtonAnniversary=(RadioButton) findViewById(R.id.radioButton_set_type_anniversary);
         radioButtonaccount=(RadioButton)findViewById(R.id.radioButton_set_type_account);
         radioButtonCommon=(RadioButton)findViewById(R.id.radioButton_set_type_common);
-        radioButtonAnniversary.setChecked(true);
+        if(event.getItem().getType().equals(type.Anniversary)) radioButtonAnniversary.setChecked(true);
+        else if(event.getItem().getType().equals(type.AccountEvent)) radioButtonaccount.setChecked(true);
+        else radioButtonCommon.setChecked(true);
 
         radioButton_Need_Notification=(RadioButton) findViewById(R.id.radioButton_set_need_notification);
         radioButton_No_Notification=(RadioButton) findViewById(R.id.radioButton_set_no_notification);
-        radioButton_No_Notification.setChecked(true);
+        if(event.isRecurring()) radioButton_Need_Notification.setChecked(true);
+        else radioButton_No_Notification.setChecked(true);
 
         radioButtonUndo=(RadioButton) findViewById(R.id.radioButton_set_undo);
         radioButtonFinished=(RadioButton) findViewById(R.id.radioButton_set_finished);
+        if(event.getClass()== CommonEvent.class && ((CommonEvent)event).isFinish()) radioButtonFinished.setChecked(true);
         radioButtonUndo.setChecked(true);
 
         radioButton_Need_Notification.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getApplicationContext(),"dialog set notification",Toast.LENGTH_LONG);
-
                 showDialogSetNotification();
             }
         });
@@ -110,7 +130,16 @@ public class Activity_SetEvent extends AppCompatActivity {
     //初始化消息添加容器ScrollView.LinearLayout
     private void initInfoLayout(){
         layoutAllInfo =(LinearLayout)findViewById(R.id.linear_layout_addInfo_page_setEvent);
+
+        //连接数据库
+        if(event!=null){
+            List<TravelRecord>alreadyRecordList=TemporaryAction.getEventManager().getRecord(event.getItem().getId());
+            for (TravelRecord record: alreadyRecordList) {
+                addEditText(record);
+            }
+        }
         addEditText();
+
         button_addInfo=(Button) findViewById(R.id.button_add_info_page_setEvent);
         button_addInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,19 +181,69 @@ public class Activity_SetEvent extends AppCompatActivity {
         layoutAllInfo.addView(layout);
     }
 
+    //向layout信息容器中添加一条info信息输入框
+    private void addEditText(TravelRecord record){
+        TextView textView=new TextView(this);
+        textView.setText("input info");
+        textView.setTextSize(20);
+        textView.setWidth(200);
+        textView.setHeight(200);
+        textView.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
+
+        EditText editText=new EditText(this);
+        editText.setWidth(680);
+        editText.setText(record.getInformation());
+        //addedInfoList.add(editText);
+
+        Button buttonPos=new Button(this);
+        buttonPos.setText("pos");
+        buttonPos.setWidth(120);
+        buttonPos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                locationService.start();
+            }
+        });
+
+        LinearLayout layout=new LinearLayout(this);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        layout.addView(textView);
+        layout.addView(editText);
+        layout.addView(buttonPos);
+
+        layoutAllInfo.addView(layout);
+    }
+
     //unfinished function
     //在跳转页面前将本界面的信息打包保存在TemporaryAction中
     private void informationPackage(){
         String title= editText_title.getText().toString();
+        Date date=new Date();
+        boolean needNotification;
+        boolean finished;
+        if(event==null){
+            if(radioButtonAnniversary.isChecked()) event=TemporaryAction.factoryAnniversary.createEvent();
+            else if(radioButtonaccount.isChecked()) event=TemporaryAction.factoryAccount.createEvent();
+            else event=TemporaryAction.factoryCommon.createEvent();
+            event.setTitle(title);
+            event.setDate(date);
+        }
+        needNotification=radioButton_Need_Notification.isChecked();
+        event.setRecurring(needNotification);
+        finished=radioButtonFinished.isChecked();
+        if(event.getClass()==CommonEvent.class){
+            ((CommonEvent)event).setType(editText_extraInfo.getText().toString());
+            ((CommonEvent)event).setFinish(finished);
+        }
+        else if(event.getClass()== AccountEvent.class)
+            try{
+                ((AccountEvent)event).setMoney(Integer.parseInt(editText_extraInfo.getText().toString()));
+            }catch (Exception e){}
+
         for (EditText editText:addedInfoList) {
 
         }
-        Date date=new Date();
-        type eventType;
-        boolean needNotification;
-        boolean finished=false;
-        //先连接数据库返回一个页面信息对应的Event事件
-        //再将Event保存到TemporaryAction中，供page_eventInfo使用
+        //将Event保存到TemporaryAction中，供page_eventInfo使用
     }
 
     //弹出修改提醒事件的对话框

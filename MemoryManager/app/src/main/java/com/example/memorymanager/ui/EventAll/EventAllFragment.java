@@ -102,8 +102,20 @@ public class EventAllFragment extends Fragment implements EventPageControl {
     //unfinished function
     //初始化本界面时将调用此方法调用连接数据库的相关方法来获取事件列表
     private void connectDatabase(){
-        //需要修改
-        test();
+        //test();
+        int type=TemporaryAction.getChooseFrom_page_type();
+        switch (type){
+            case 0:
+                eventList=TemporaryAction.getEventManager().getAnniversaryEvent();
+                break;
+            case 1:
+                eventList=TemporaryAction.getEventManager().getAccountEvent();
+                break;
+            case 2:
+                eventList=TemporaryAction.getEventManager().getCommonEvent();
+                break;
+            default: break;
+        }
     }
 
     //初始化返回按钮和事件添加按钮

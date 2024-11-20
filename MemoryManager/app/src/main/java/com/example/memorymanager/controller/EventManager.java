@@ -54,9 +54,9 @@ public class EventManager {
         //type type = event.getItem().getType();
         //int item_id = (int)sqlHelper.insertItem(event.getItem());
         switch (type){
-            case AccountEvent : sqlHelper.insertAccountEvent((AccountEvent) event);
-            case CommonEvent : sqlHelper.insertCommonEvent((CommonEvent) event,travelRecordList);
-            case Anniversary : sqlHelper.insertAnniversary((AnniversaryEvent) event);
+            case AccountEvent : sqlHelper.insertAccountEvent((AccountEvent) event);break;
+            case CommonEvent : sqlHelper.insertCommonEvent((CommonEvent) event,travelRecordList);break;
+            case Anniversary : sqlHelper.insertAnniversary((AnniversaryEvent) event);break;
         }
     }
 
@@ -65,26 +65,54 @@ public class EventManager {
         sqlHelper.deleteItemById(event.getItem().getId());
         sqlHelper.deleteRecordById(event.getItem().getId());
         switch (type){
-            case AccountEvent : sqlHelper.deleteAccountEventById(event.getItem().getId());
-            case CommonEvent : sqlHelper.deleteCommonEventById(event.getItem().getId());
-            case Anniversary : sqlHelper.deleteAnniversaryById(event.getItem().getId());
+            case AccountEvent : sqlHelper.deleteAccountEventById(event.getItem().getId());break;
+            case CommonEvent : sqlHelper.deleteCommonEventById(event.getItem().getId());break;
+            case Anniversary : sqlHelper.deleteAnniversaryById(event.getItem().getId());break;
         }
     }
 
     public void updateEvent(Event event) {
         type type = event.getItem().getType();
         switch (type){
-            case AccountEvent : sqlHelper.updateAccountEvent((AccountEvent) event);
-            case CommonEvent : sqlHelper.updateCommonEvent((CommonEvent) event);
-            case Anniversary : sqlHelper.updateAnniversary((AnniversaryEvent) event);
+            case AccountEvent : sqlHelper.updateAccountEvent((AccountEvent) event);break;
+            case CommonEvent : sqlHelper.updateCommonEvent((CommonEvent) event);break;
+            case Anniversary : sqlHelper.updateAnniversary((AnniversaryEvent) event);break;
         }
     }
 
 
     public List<Event> getEvent() {
+        events.clear();
         events.addAll(sqlHelper.queryAccountEvent());
         events.addAll(sqlHelper.queryCommonEvent());
         events.addAll(sqlHelper.queryAnniversary());
+        return events;
+    }
+    public List<Event> getAccountEvent() {
+        events.clear();
+        events.addAll(sqlHelper.queryAccountEvent());
+        return events;
+    }
+    public List<Event> getCommonEvent() {
+        events.clear();
+        events.addAll(sqlHelper.queryCommonEvent());
+        return events;
+    }
+    public List<Event> getAnniversaryEvent() {
+        events.clear();
+        events.addAll(sqlHelper.queryAnniversary());
+        return events;
+    }
+    public List<TravelRecord>getRecord(int id){
+        List<TravelRecord> travelRecordList = new ArrayList<>();
+        travelRecordList = sqlHelper.queryRecord(id);
+        return travelRecordList;
+    }
+    public List<Event>getTitleEvent(String title){
+        events.clear();
+        events.addAll(sqlHelper.queryAccountEventByIsRecurring(title));
+        events.addAll(sqlHelper.queryCommonEventBy(title));
+        events.addAll(sqlHelper.queryAnniversaryBy(title));
         return events;
     }
 }

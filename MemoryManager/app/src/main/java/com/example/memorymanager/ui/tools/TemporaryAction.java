@@ -3,6 +3,10 @@ package com.example.memorymanager.ui.tools;
 import com.example.memorymanager.controller.EventManager;
 import com.example.memorymanager.controller.NotificationService;
 import com.example.memorymanager.handle.Event;
+import com.example.memorymanager.handle.Factory;
+import com.example.memorymanager.model.AccountEventFactory;
+import com.example.memorymanager.model.AnniversaryEventFactory;
+import com.example.memorymanager.model.CommonEventFactory;
 import com.example.memorymanager.model.Location;
 
 //本类起到类似Cache的作用，保存使用软件期间一些比较重要的操作
@@ -65,4 +69,9 @@ public class TemporaryAction {
     private static Location location=new Location();
     public static Location getLocation(){ return location; }
     public static void setLocation(Location l){ location=l; }
+
+    //Event的工厂对象
+    public static Factory factoryAnniversary=new AnniversaryEventFactory();
+    public static Factory factoryAccount=new AccountEventFactory();
+    public static Factory factoryCommon=new CommonEventFactory();
 }

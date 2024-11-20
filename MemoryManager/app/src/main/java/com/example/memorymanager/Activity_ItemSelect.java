@@ -90,13 +90,15 @@ public class Activity_ItemSelect extends AppCompatActivity implements EventPageC
 
 
     private void connectDatabase(){
-        test();
+        //test();
         //需要修改
 
         String title=TemporaryAction.getEditTextTitleInPageSelect();
         int type=TemporaryAction.checkedRadioInPageSelect[0]; // 0=anniversary, 1=account, 2=common, -1=disable
         int finished=TemporaryAction.checkedRadioInPageSelect[1]; // 0=finished, 1=undo, -1=disable
         int needNotification=TemporaryAction.checkedRadioInPageSelect[2]; // 0=need, 1=no_need, -1=disable
+
+        eventList=TemporaryAction.getEventManager().getTitleEvent(title);
     }
 
     /*更新事件列表容器（全部更新），并将更新结果展示到前端Layout控件；
