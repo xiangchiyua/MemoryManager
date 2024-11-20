@@ -51,7 +51,7 @@ public class EventManager {
 
     public void addEvent(Event event) {
         type type = event.getItem().getType();
-        sqlHelper.insertItem(event.getItem());
+        //int item_id = (int)sqlHelper.insertItem(event.getItem());
         switch (type){
             case AccountEvent : sqlHelper.insertAccountEvent((AccountEvent) event);
             case CommonEvent : sqlHelper.insertCommonEvent((CommonEvent) event);
