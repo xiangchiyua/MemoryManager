@@ -1,4 +1,4 @@
-package com.example.memorymanager.ui;
+package com.example.memorymanager.ui.tools;
 
 public enum PagesName {
     //标题界面

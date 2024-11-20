@@ -12,11 +12,12 @@ import androidx.core.view.WindowInsetsCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.memorymanager.controller.EventManager;
 import com.example.memorymanager.controller.NotificationService;
-import com.example.memorymanager.ui.PagesName;
-import com.example.memorymanager.ui.TemporaryAction;
+import com.example.memorymanager.ui.tools.PagesName;
+import com.example.memorymanager.ui.tools.TemporaryAction;
 
 public class Activity_Title extends AppCompatActivity {
 
@@ -32,10 +33,11 @@ public class Activity_Title extends AppCompatActivity {
             return insets;
         });
 
+        Toast.makeText(this,"first page initiailized", Toast.LENGTH_LONG).show();
         //获取界面对应的按钮对象
-        Button button_show=(Button)findViewById(R.id.button_show);
-        Button button_select=(Button)findViewById(R.id.button_select);
-        Button button_add=(Button)findViewById(R.id.button_add);
+        Button button_show=(Button)findViewById(R.id.button_show_page_title);
+        Button button_select=(Button)findViewById(R.id.button_select_page_title);
+        Button button_add=(Button)findViewById(R.id.button_add_page_title);
         //为本界面按钮添加View.OnClickListener类型的响应对象
         button_show.setOnClickListener(SkipToPage(PagesName.page_type));
         button_select.setOnClickListener(SkipToPage(PagesName.page_select));
@@ -44,7 +46,14 @@ public class Activity_Title extends AppCompatActivity {
         EventManager eventManager = EventManager.getInstance();
         eventManager.initialize(this); // 传递 Activity 的 Context
         eventManager.checkDatabase();
-        NotificationService servicce=NotificationService.getService();
+        NotificationService notificationService=NotificationService.getService();
+        new Thread(notificationService).start();
+    }
+
+    @Override
+    public void onDestroy(){
+        Toast.makeText(this,"page_title destroyed",Toast.LENGTH_LONG).show();
+        super.onDestroy();
     }
 
     //根据传入的页面名称，更新TemporaryAction的相关信息，并跳转到相应界面
@@ -86,4 +95,5 @@ public class Activity_Title extends AppCompatActivity {
         }
         return null;
     }
+
 }

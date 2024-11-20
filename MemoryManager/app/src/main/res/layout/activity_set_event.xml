@@ -7,21 +7,23 @@
     android:layout_height="match_parent"
     tools:context=".Activity_SetEvent">
 
+
     <Button
         android:id="@+id/button_backFrom_page_setEvent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="52dp"
         android:text="back"
-        tools:layout_editor_absoluteX="4dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayout_setEvent_edit_title"
         android:layout_width="377dp"
         android:layout_height="71dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="100dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -41,11 +43,12 @@
 
     </LinearLayout>
 
+
     <RadioGroup
         android:id="@+id/radioGroup_set_type"
-        android:layout_width="223dp"
-        android:layout_height="167dp"
-        android:layout_marginStart="92dp"
+        android:layout_width="156dp"
+        android:layout_height="213dp"
+        android:layout_marginStart="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/linearLayout_setEvent_edit_title">
 
@@ -53,48 +56,86 @@
             android:id="@+id/radioButton_set_type_anniversary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="type-Anniversary"/>
+            android:text="type-Anniversary" />
 
         <RadioButton
-            android:id="@+id/radioButton_set_type_study"
+            android:id="@+id/radioButton_set_type_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="type-Study"/>
+            android:text="type-account" />
 
         <RadioButton
             android:id="@+id/radioButton_set_type_common"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="type-Common"/>
-
+            android:text="type-Common" />
     </RadioGroup>
 
+    <RadioGroup
+        android:id="@+id/radioGroup_set_need_notification"
+        android:layout_width="155dp"
+        android:layout_height="110dp"
+        android:layout_marginStart="172dp"
+        app:layout_constraintStart_toStartOf="@id/radioGroup_set_type"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout_setEvent_edit_title">
 
-    <LinearLayout
-        android:id="@+id/linearLayout_setEvent_edit_info"
-        android:layout_width="381dp"
-        android:layout_height="377dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="4dp"
-        android:orientation="horizontal"
+        <RadioButton
+            android:id="@+id/radioButton_set_need_notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="type-need_notification" />
+
+        <RadioButton
+            android:id="@+id/radioButton_set_no_notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="type-no-notification" />
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/radioGroup_set_if_undo"
+        android:layout_width="155dp"
+        android:layout_height="110dp"
+        android:layout_marginStart="172dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="@id/radioGroup_set_type"
+        app:layout_constraintTop_toBottomOf="@id/radioGroup_set_need_notification">
+
+        <RadioButton
+            android:id="@+id/radioButton_set_undo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="type-uodo" />
+
+        <RadioButton
+            android:id="@+id/radioButton_set_finished"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="type-finished" />
+    </RadioGroup>
+
+    <ScrollView
+        android:layout_width="403dp"
+        android:layout_height="265dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_setEvent_confirm"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/radioGroup_set_type">
 
-        <TextView
-            android:layout_width="75dp"
-            android:layout_height="match_parent"
-            android:text="input info"
-            android:textAlignment="center"
-            android:textSize="20dp" />
+        <LinearLayout
+            android:id="@+id/linear_layout_addInfo_page_setEvent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/editText_set_info"
-            android:layout_width="257dp"
-            android:layout_height="match_parent"
-            android:text="info"
-            android:textAlignment="viewStart" />
-
-    </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="add info"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </ScrollView>
 
     <Button
         android:id="@+id/button_setEvent_confirm"
@@ -105,6 +146,16 @@
         tools:layout_editor_absoluteY="666dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Button
+        android:id="@+id/button_add_info_page_setEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="288dp"
+        android:layout_marginBottom="4dp"
+        android:text="add info"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

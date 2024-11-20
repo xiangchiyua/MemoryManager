@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.memorymanager.Activity_EventInfo;
+import com.example.memorymanager.Activity_SetEvent;
 import com.example.memorymanager.Activity_Type;
 import com.example.memorymanager.databinding.FragmentEventNotificationsBinding;
 import com.example.memorymanager.enums.type;
@@ -23,9 +25,9 @@ import com.example.memorymanager.handle.Item;
 import com.example.memorymanager.model.AccountEvent;
 import com.example.memorymanager.model.AnniversaryEvent;
 import com.example.memorymanager.model.CommonEvent;
-import com.example.memorymanager.ui.EventPageControl;
-import com.example.memorymanager.ui.PagesName;
-import com.example.memorymanager.ui.TemporaryAction;
+import com.example.memorymanager.ui.tools.EventPageControl;
+import com.example.memorymanager.ui.tools.PagesName;
+import com.example.memorymanager.ui.tools.TemporaryAction;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,12 +52,16 @@ public class NotificationsFragment extends Fragment implements EventPageControl 
         View root = binding.getRoot();
 
         final TextView textView = binding.textEventNotifications;
+
+        //创建页面输出提示信息
+        Toast.makeText(super.getContext(),"fragment_event_notifications created",Toast.LENGTH_LONG).show();
         //获取本界面的LinearLayout事件列表控件
         layout=binding.linearLayoutEventNotifications;
         //初始化返回按钮
         initBackButton();
+        //调用连接数据库的方法来更新本类的eventList
+        connectDatabase();
         //初始化界面
-        test();
         updateEventLayout();
         Button button=binding.buttonTest3;
         button.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +85,7 @@ public class NotificationsFragment extends Fragment implements EventPageControl 
     }
 
 
+    //待删
     private void test(){
         Item i=new Item(new Date(),"itemTitle","itemDescription",10, type.AccountEvent);
         eventList.add(new AccountEvent("Summer festival",true, new Date(),"empty",i,1));
@@ -91,14 +98,31 @@ public class NotificationsFragment extends Fragment implements EventPageControl 
     }
 
 
-    //初始化返回按钮
+    //unfinished function
+    //初始化本界面时将调用此方法调用连接数据库的相关方法来获取事件列表
+    private void connectDatabase(){
+        //需要修改
+        test();
+    }
+
+    //初始化返回按钮和事件添加按钮
     private void initBackButton(){
         Button button_back=binding.buttonBackFromPageItemType;
         button_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TemporaryAction.setIfFromPageEventInfo(false);
                 TemporaryAction.setPriorPage(PagesName.page_itemType);
                 startActivity(new Intent(NotificationsFragment.super.getContext(), Activity_Type.class));
+            }
+        });
+        Button button_add=binding.buttonAddPageItemType;
+        button_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TemporaryAction.setIfFromPageEventInfo(false);
+                TemporaryAction.setPriorPage(PagesName.page_itemType);
+                startActivity(new Intent(NotificationsFragment.super.getContext(), Activity_SetEvent.class));
             }
         });
     }
@@ -148,6 +172,7 @@ public class NotificationsFragment extends Fragment implements EventPageControl 
             @Override
             public void onClick(View view) {
                 TemporaryAction.setEventToShow(event);
+                TemporaryAction.setIfFromPageEventInfo(false);
                 TemporaryAction.setPriorPage(PagesName.page_itemType);
                 startActivity(new Intent(NotificationsFragment.super.getContext(), Activity_EventInfo.class));
             }

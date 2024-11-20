@@ -1,6 +1,4 @@
-package com.example.memorymanager.ui;
-
-import android.graphics.Region;
+package com.example.memorymanager.ui.tools;
 
 import com.example.memorymanager.controller.EventManager;
 import com.example.memorymanager.controller.NotificationService;
@@ -16,7 +14,7 @@ public class TemporaryAction {
 
     //page_type;
     // click "Anniversary", this num will be set to 0;
-    // click "study", set to 1;
+    // click "account", set to 1;
     // click "common", set to 2;
     private static int chooseFrom_page_type=0;
     public static void setChooseFrom_page_type(int type){ chooseFrom_page_type=type%3; }
@@ -40,6 +38,11 @@ public class TemporaryAction {
     public static void setEventToShow(Event event){ eventToShow=event; }
     public static Event getEventToShow(){ return eventToShow; }
 
+    //check if the prior page is page_eventInfo when at page_setEvent
+    private static boolean fromPageEventInfo=false;
+    public static void setIfFromPageEventInfo(boolean yes){ fromPageEventInfo=yes; }
+    public static Boolean getIfFromPageEventInfo(){ return fromPageEventInfo; }
+
     public static EventManager getEventManager(){
         return EventManager.getInstance();
     }
@@ -47,4 +50,13 @@ public class TemporaryAction {
     public static NotificationService getNotificationService(){
         return NotificationService.getService();
     }
+
+    //check radioButtons in page_select,
+    // item[0] -> type of event; 0=Anniversary, 1=account, 2=common;
+    // item[1] -> whether finished; 0=finished, 1=undo;
+    // item[2] -> whether need notification; 0=need, 1=no_need;
+    public static int[] checkedRadioInPageSelect={-1,-1,-1};
+    private static String editTextTitleInPageSelect="";
+    public static void setEditTextTitleInPageSelect(String title){ editTextTitleInPageSelect=title; }
+    public static String getEditTextTitleInPageSelect(){ return editTextTitleInPageSelect; }
 }

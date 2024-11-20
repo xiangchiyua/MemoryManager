@@ -24,17 +24,17 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="124dp"
         android:text="Anniversary"
-        app:layout_constraintBottom_toTopOf="@id/button_study"
+        app:layout_constraintBottom_toTopOf="@id/button_account"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button_study"
+        android:id="@+id/button_account"
         android:layout_width="380dp"
         android:layout_height="150dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
-        android:text="Study"
+        android:text="account"
         app:layout_constraintBottom_toTopOf="@id/button_common"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_anniversary" />
@@ -48,7 +48,7 @@
         android:text="Common"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_study" />
+        app:layout_constraintTop_toBottomOf="@id/button_account" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

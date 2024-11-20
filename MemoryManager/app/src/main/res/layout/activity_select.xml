@@ -58,10 +58,10 @@
             android:text="type-Anniversary" />
 
         <RadioButton
-            android:id="@+id/radioButton_select_type_study"
+            android:id="@+id/radioButton_select_type_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="type-Study" />
+            android:text="type-account" />
 
         <RadioButton
             android:id="@+id/radioButton_select_type_common"
