@@ -3,6 +3,7 @@ package com.example.memorymanager.ui.tools;
 import com.example.memorymanager.controller.EventManager;
 import com.example.memorymanager.controller.NotificationService;
 import com.example.memorymanager.handle.Event;
+import com.example.memorymanager.model.Location;
 
 //本类起到类似Cache的作用，保存使用软件期间一些比较重要的操作
 public class TemporaryAction {
@@ -59,4 +60,9 @@ public class TemporaryAction {
     private static String editTextTitleInPageSelect="";
     public static void setEditTextTitleInPageSelect(String title){ editTextTitleInPageSelect=title; }
     public static String getEditTextTitleInPageSelect(){ return editTextTitleInPageSelect; }
+
+    //获取的位置信息（Location）
+    private static Location location=new Location();
+    public static Location getLocation(){ return location; }
+    public static void setLocation(Location l){ location=l; }
 }

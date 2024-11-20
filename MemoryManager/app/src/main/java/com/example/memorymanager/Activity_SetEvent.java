@@ -18,6 +18,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.memorymanager.enums.type;
+import com.example.memorymanager.location.LocationService;
+import com.example.memorymanager.model.Location;
 import com.example.memorymanager.ui.Dialog.Dialog_SetNotification;
 import com.example.memorymanager.ui.tools.PagesName;
 import com.example.memorymanager.ui.tools.TemporaryAction;
@@ -27,6 +29,8 @@ import java.util.Date;
 import java.util.List;
 
 public class Activity_SetEvent extends AppCompatActivity {
+
+    private LocationService locationService;
 
     EditText editText_title;
 
@@ -56,6 +60,12 @@ public class Activity_SetEvent extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        //初始化位置服务对象
+        locationService=new LocationService(Activity_SetEvent.this,location -> {
+            TemporaryAction.setLocation(location);
+            Toast.makeText(Activity_SetEvent.this,TemporaryAction.getLocation().getDescription(),Toast.LENGTH_LONG).show();
         });
 
         //初始化标题输入框
@@ -126,6 +136,12 @@ public class Activity_SetEvent extends AppCompatActivity {
         Button buttonPos=new Button(this);
         buttonPos.setText("pos");
         buttonPos.setWidth(120);
+        buttonPos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                locationService.start();
+            }
+        });
 
         LinearLayout layout=new LinearLayout(this);
         layout.setOrientation(LinearLayout.HORIZONTAL);

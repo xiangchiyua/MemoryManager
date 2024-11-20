@@ -16,6 +16,7 @@ public class LocationService {
     public LocationService(Context context, OnLocationReceivedCallback callback) {
         this.callback = callback;
 
+        LocationClient.setAgreePrivacy(true);
         try {
             locationClient = new LocationClient(context);
         }catch (Exception e) {
