@@ -41,6 +41,8 @@ public class Activity_Select extends AppCompatActivity {
             return insets;
         });
 
+        //初始化RadioButton
+        initRadioButton();
         //初始化标题输入框
         editText_title=(EditText)findViewById(R.id.editText_select_title);
         editText_title.setText("");
@@ -62,7 +64,7 @@ public class Activity_Select extends AppCompatActivity {
         radioButton_type_Anniversary=(RadioButton)findViewById(R.id.radioButton_select_type_anniversary);
         radioButton_type_common=(RadioButton) findViewById(R.id.radioButton_select_type_common);
         radioButton_need_notification=(RadioButton) findViewById(R.id.radioButton_select_type_needNotification);
-        radioButton_no_notification=(RadioButton) findViewById(R.id.radioButton_set_no_notification);
+        radioButton_no_notification=(RadioButton) findViewById(R.id.radioButton_select_type_noNotification);
         radioButton_finished=(RadioButton) findViewById(R.id.radioButton_select_type_finished);
         radioButton_undo=(RadioButton) findViewById(R.id.radioButton_select_type_undo);
     }

@@ -45,7 +45,8 @@ public class Activity_EventInfo extends AppCompatActivity {
 
         //设置修改事件信息按钮
         Button button_event_reset=(Button) findViewById(R.id.button_event_reset);
-        button_event_reset.setOnClickListener(skiptoPage(0));
+//        button_event_reset.setOnClickListener(skiptoPage(0));
+        button_event_reset.setOnClickListener(deleteEvent(TemporaryAction.getEventToShow(),1));
 
         //设置返回按钮
         Button button_back=(Button) findViewById(R.id.button_backFrom_page_eventInfo);
@@ -82,6 +83,34 @@ public class Activity_EventInfo extends AppCompatActivity {
         return result;
     }
 
+    //删除一个事件
+    public View.OnClickListener deleteEvent(Event event,int action){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(event!=null)
+                    TemporaryAction.getEventManager().removeEvent(event);
+                if(action==0){
+                    TemporaryAction.setIfFromPageEventInfo(true);
+                    startActivity(new Intent(Activity_EventInfo.this,Activity_SetEvent.class));
+                }
+                else{
+                    if(TemporaryAction.getPriorPage().equals(PagesName.page_itemType)
+                            || TemporaryAction.getPriorPage().equals(PagesName.page_type)){
+//                        TemporaryAction.setPriorPage(PagesName.page_eventInfo);
+                        TemporaryAction.setIfFromPageEventInfo(true);
+                        startActivity(new Intent(Activity_EventInfo.this, Activity_ItemType.class));
+                    }
+                    else if(TemporaryAction.getPriorPage().equals(PagesName.page_itemSelect)
+                            || TemporaryAction.getPriorPage().equals(PagesName.page_select)){
+//                        TemporaryAction.setPriorPage(PagesName.page_eventInfo);
+                        TemporaryAction.setIfFromPageEventInfo(true);
+                        startActivity(new Intent(Activity_EventInfo.this, Activity_ItemSelect.class));
+                    }
+                }
+            }
+        };
+    }
 
     //向事件信息列表容器中添加一条记录
     private void addEventInfo(TravelRecord info){
