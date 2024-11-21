@@ -3,36 +3,28 @@ package com.example.memorymanager.ui.Dialog;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.TextView;
-
 
 import androidx.annotation.NonNull;
 
 import com.example.memorymanager.R;
-import com.example.memorymanager.ui.tools.TemporaryAction;
-
-import java.util.Calendar;
-import java.util.Date;
 
 
-public class Dialog_SetNotification extends android.app.Dialog implements View.OnClickListener {
+public class Dialog_Notification extends android.app.Dialog implements View.OnClickListener {
 
     private String title,message,cancel,confirm;
     private OnCancelListener cancelListener;
     private OnConfirmListener confirmListener;
 
 
-    public Dialog_SetNotification(@NonNull Context context) {
+    public Dialog_Notification(@NonNull Context context) {
         super(context);
     }
 
-    public Dialog_SetNotification(@NonNull Context context, int themeResId) {
+    public Dialog_Notification(@NonNull Context context, int themeResId) {
         super(context, themeResId);
     }
 
@@ -56,34 +48,9 @@ public class Dialog_SetNotification extends android.app.Dialog implements View.O
     public void setConfirm(String confirm,OnConfirmListener listener) {
         this.confirm = confirm;
         this.confirmListener=listener;
-        EditText editText=(EditText)findViewById(R.id.editText_dialog_setNotification_description);
-        TemporaryAction.descriptionOfDialogSetNotification=editText.getText().toString();
-        setDate();
         this.hide();
     }
 
-    private Date setDate(){
-        EditText editText_month=(EditText)findViewById(R.id.editText_dialog_setNotification_month);
-        EditText editText_day=(EditText)findViewById(R.id.editText_dialog_setNotification_day);
-        EditText editText_hour=(EditText)findViewById(R.id.editText_dialog_setNotification_hour);
-        EditText editText_minute=(EditText)findViewById(R.id.editText_dialog_setNotification_minute);
-        Date date=new Date();
-        Calendar calendar=Calendar.getInstance();
-        try{
-            if(!editText_month.getText().toString().isEmpty())
-                calendar.set(Calendar.MONTH, Integer.parseInt(editText_month.getText().toString()));
-            if(!editText_day.getText().toString().isEmpty())
-                calendar.set(Calendar.DATE, Integer.parseInt(editText_day.getText().toString()));
-            if(!editText_hour.getText().toString().isEmpty())
-                calendar.set(Calendar.HOUR, Integer.parseInt(editText_hour.getText().toString()));
-            if(!editText_minute.getText().toString().isEmpty())
-                calendar.set(Calendar.MINUTE, Integer.parseInt(editText_minute.getText().toString()));
-        }catch (Exception exp){}
-
-        date=calendar.getTime();
-        TemporaryAction.dateOfDialogSetNotification=date;
-        return date;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,10 +102,10 @@ public class Dialog_SetNotification extends android.app.Dialog implements View.O
     }
 
     public interface OnCancelListener{
-        void onCancel(Dialog_SetNotification dialog);
+        void onCancel(Dialog_Notification dialog);
     }
 
     public interface OnConfirmListener{
-        void onConfirm(Dialog_SetNotification dialog);
+        void onConfirm(Dialog_Notification dialog);
     }
 }

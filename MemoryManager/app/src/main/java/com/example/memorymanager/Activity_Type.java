@@ -18,6 +18,8 @@ public class Activity_Type extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        TemporaryAction.setEventToShow(null);
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_type);

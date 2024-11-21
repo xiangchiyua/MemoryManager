@@ -2,12 +2,16 @@ package com.example.memorymanager.ui.tools;
 
 import com.example.memorymanager.controller.EventManager;
 import com.example.memorymanager.controller.NotificationService;
+import com.example.memorymanager.enums.type;
 import com.example.memorymanager.handle.Event;
 import com.example.memorymanager.handle.Factory;
 import com.example.memorymanager.model.AccountEventFactory;
 import com.example.memorymanager.model.AnniversaryEventFactory;
 import com.example.memorymanager.model.CommonEventFactory;
 import com.example.memorymanager.model.Location;
+import com.example.memorymanager.model.TravelRecord;
+
+import java.util.Date;
 
 //本类起到类似Cache的作用，保存使用软件期间一些比较重要的操作
 public class TemporaryAction {
@@ -74,4 +78,9 @@ public class TemporaryAction {
     public static Factory factoryAnniversary=new AnniversaryEventFactory();
     public static Factory factoryAccount=new AccountEventFactory();
     public static Factory factoryCommon=new CommonEventFactory();
+
+    //在Dialog_SetNotification设置提醒事件的信息
+    public static type typeOfDialogSetNotification;
+    public static String descriptionOfDialogSetNotification;
+    public static Date dateOfDialogSetNotification;
 }

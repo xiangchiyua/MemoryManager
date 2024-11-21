@@ -36,6 +36,7 @@ public class EventManager {
         db = sqlHelper.getWritableDatabase();
         if (sqlHelper.isDatabaseExist(context, "memory.db")) {
             Log.e(TAG, "checkDatabase: checked");
+            //sqlHelper.onUpgrade(db,1,2);
         } else {
             sqlHelper.onCreate(db);
             Log.e(TAG, "checkDatabase: can not find database");
@@ -53,12 +54,20 @@ public class EventManager {
     public void addEvent(Event event, List<TravelRecord> travelRecordList, type type) {
         //type type = event.getItem().getType();
         //int item_id = (int)sqlHelper.insertItem(event.getItem());
+        long id;
         switch (type){
-            case AccountEvent : sqlHelper.insertAccountEvent((AccountEvent) event);break;
-            case CommonEvent : sqlHelper.insertCommonEvent((CommonEvent) event,travelRecordList);break;
-            case Anniversary : sqlHelper.insertAnniversary((AnniversaryEvent) event);break;
+            case AccountEvent : id = sqlHelper.insertAccountEvent((AccountEvent) event);break;
+            case CommonEvent : id = sqlHelper.insertCommonEvent((CommonEvent) event,travelRecordList);break;
+            default : id = sqlHelper.insertAnniversary((AnniversaryEvent) event);break;
         }
+        for (TravelRecord record:travelRecordList) {
+            record.setId((int)id);
+        }
+        sqlHelper.insertRecord(travelRecordList,(int)id);
     }
+//    public void addRecord(int id,List<TravelRecord> travelRecordList){
+//        sqlHelper.insertRecord()
+//    }
 
     public void removeEvent(Event event) {
         type type = event.getItem().getType();

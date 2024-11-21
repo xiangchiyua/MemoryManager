@@ -125,6 +125,7 @@
         app:layout_constraintTop_toBottomOf="@id/radioGroup_set_type" />
 
     <EditText
+        android:id="@+id/editText_extraInfo_page_setEvent"
         android:layout_width="172dp"
         android:layout_height="48dp"
         android:layout_marginStart="24dp"

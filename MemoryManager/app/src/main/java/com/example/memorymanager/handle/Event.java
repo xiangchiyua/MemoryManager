@@ -1,6 +1,8 @@
 package com.example.memorymanager.handle;
 
 
+import com.example.memorymanager.enums.type;
+
 import java.util.Date;
 
 public abstract class Event {
@@ -10,7 +12,13 @@ public abstract class Event {
     private String description;
     private Item item;
 
-    public Event(){}
+    public Event(){
+//        this.item.setId(0);
+        Item item = new Item();
+        item.setTitle(" ");
+        //item.setType(type.CommonEvent);
+        this.item = item;
+    }
     public Event(String title, boolean isRecurring, Date date, String description, Item item) {
         this.title = title;
         this.isRecurring = isRecurring;

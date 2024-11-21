@@ -9,6 +9,7 @@ public class Item {
     private String description;
     private int id;
     private type type;
+    public Item(){}
     public Item(Date reminderDate, String title, String description, int id) {
         this.reminderDate = reminderDate;
         this.title = title;

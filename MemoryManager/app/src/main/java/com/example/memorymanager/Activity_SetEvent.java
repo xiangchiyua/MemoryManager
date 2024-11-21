@@ -2,7 +2,6 @@ package com.example.memorymanager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,6 +29,7 @@ import com.example.memorymanager.ui.tools.TemporaryAction;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class Activity_SetEvent extends AppCompatActivity {
@@ -58,6 +58,9 @@ public class Activity_SetEvent extends AppCompatActivity {
     List<EditText> addedInfoList=new ArrayList<>();
     //按钮“添加消息”
     Button button_addInfo;
+    //一条备注可能会对应一条位置消息
+    EditText editText_NeedLocation;
+    HashMap<EditText, Location>locationMap=new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,13 +76,20 @@ public class Activity_SetEvent extends AppCompatActivity {
         //初始化位置服务对象
         locationService=new LocationService(Activity_SetEvent.this,location -> {
             TemporaryAction.setLocation(location);
+            locationMap.put(editText_NeedLocation,location);
             Toast.makeText(Activity_SetEvent.this,TemporaryAction.getLocation().getDescription(),Toast.LENGTH_LONG).show();
         });
 
 
+        //初始化选择框RadioButton
+        initRadioButtonAndLayout();
+        //初始化消息容器ScrollView.LinearLayout
+        initInfoLayout();
+
         event=TemporaryAction.getEventToShow();
         //初始化标题输入框
         editText_title=(EditText)findViewById(R.id.editText_set_title);
+        editText_extraInfo=(EditText) findViewById(R.id.editText_extraInfo_page_setEvent);
         if(event!=null){
             editText_title.setText(event.getTitle());
             if(event.getClass()== AccountEvent.class)
@@ -93,10 +103,7 @@ public class Activity_SetEvent extends AppCompatActivity {
         //初始化确认按钮
         Button button_setEvent_confirm=(Button) findViewById(R.id.button_setEvent_confirm);
         button_setEvent_confirm.setOnClickListener(skipToPage(PagesName.page_eventInfo));
-        //初始化选择框RadioButton
-        initRadioButtonAndLayout();
-        //初始化消息容器ScrollView.LinearLayout
-        initInfoLayout();
+
     }
 
     //初始化类型选择框控件
@@ -104,24 +111,24 @@ public class Activity_SetEvent extends AppCompatActivity {
         radioButtonAnniversary=(RadioButton) findViewById(R.id.radioButton_set_type_anniversary);
         radioButtonaccount=(RadioButton)findViewById(R.id.radioButton_set_type_account);
         radioButtonCommon=(RadioButton)findViewById(R.id.radioButton_set_type_common);
-        if(event.getItem().getType().equals(type.Anniversary)) radioButtonAnniversary.setChecked(true);
-        else if(event.getItem().getType().equals(type.AccountEvent)) radioButtonaccount.setChecked(true);
+        if(event!=null && event.getItem().getType().equals(type.Anniversary)) radioButtonAnniversary.setChecked(true);
+        else if(event!=null && event.getItem().getType().equals(type.AccountEvent)) radioButtonaccount.setChecked(true);
         else radioButtonCommon.setChecked(true);
 
         radioButton_Need_Notification=(RadioButton) findViewById(R.id.radioButton_set_need_notification);
         radioButton_No_Notification=(RadioButton) findViewById(R.id.radioButton_set_no_notification);
-        if(event.isRecurring()) radioButton_Need_Notification.setChecked(true);
+        if(event!=null && event.isRecurring()) radioButton_Need_Notification.setChecked(true);
         else radioButton_No_Notification.setChecked(true);
 
         radioButtonUndo=(RadioButton) findViewById(R.id.radioButton_set_undo);
         radioButtonFinished=(RadioButton) findViewById(R.id.radioButton_set_finished);
-        if(event.getClass()== CommonEvent.class && ((CommonEvent)event).isFinish()) radioButtonFinished.setChecked(true);
+        if(event!=null && event.getClass()== CommonEvent.class && ((CommonEvent)event).isFinish()) radioButtonFinished.setChecked(true);
         radioButtonUndo.setChecked(true);
 
         radioButton_Need_Notification.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"dialog set notification",Toast.LENGTH_LONG);
+                Toast.makeText(getApplicationContext(),"dialog set notification",Toast.LENGTH_LONG).show();
                 showDialogSetNotification();
             }
         });
@@ -168,6 +175,7 @@ public class Activity_SetEvent extends AppCompatActivity {
         buttonPos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                editText_NeedLocation=editText;
                 locationService.start();
             }
         });
@@ -235,14 +243,47 @@ public class Activity_SetEvent extends AppCompatActivity {
             ((CommonEvent)event).setType(editText_extraInfo.getText().toString());
             ((CommonEvent)event).setFinish(finished);
         }
-        else if(event.getClass()== AccountEvent.class)
+        else if(event.getClass()== AccountEvent.class){
             try{
                 ((AccountEvent)event).setMoney(Integer.parseInt(editText_extraInfo.getText().toString()));
             }catch (Exception e){}
-
-        for (EditText editText:addedInfoList) {
-
         }
+
+        event.getItem().setTitle(event.getTitle());
+        if(radioButton_Need_Notification.isChecked()){
+            event.getItem().setReminderDate(TemporaryAction.dateOfDialogSetNotification);
+            event.getItem().setDescription(TemporaryAction.descriptionOfDialogSetNotification);
+        }
+        if(radioButtonUndo.isChecked()){
+            TemporaryAction.getNotificationService().updateNotifiedEventList(event);
+        } else if (radioButtonFinished.isChecked()||radioButton_No_Notification.isChecked()) {
+            TemporaryAction.getNotificationService().removeFromNotificationEventList(event);
+        }
+
+        List<TravelRecord> recordList=new ArrayList<>();
+        for (EditText editText:addedInfoList) {
+            TravelRecord record=new TravelRecord();
+            record.setId(event.getItem().getId());
+            record.setTime(new Date().toString());
+            record.setInformation(editText.getText().toString());
+            if(locationMap.containsKey(editText)){
+                record.setLocationDescription(locationMap.get(editText).getDescription());
+                record.setLocationLatitude(locationMap.get(editText).getLatitude());
+                record.setLocationLongitude(locationMap.get(editText).getLongitude());
+            }
+            recordList.add(record);
+        }
+
+        int getType=TemporaryAction.getChooseFrom_page_type();
+        type _type;
+        switch (getType){
+            case 0: _type=type.Anniversary; break;
+            case 1: _type=type.AccountEvent; break;
+            default: _type=type.CommonEvent; break;
+        }
+        event.getItem().setType(_type);
+        TemporaryAction.getEventManager().addEvent(event,recordList,_type);
+        TemporaryAction.setEventToShow(event);
         //将Event保存到TemporaryAction中，供page_eventInfo使用
     }
 
@@ -264,11 +305,11 @@ public class Activity_SetEvent extends AppCompatActivity {
 
     //控制页面跳转
     private View.OnClickListener skipToPage(PagesName pagesName){
-        informationPackage();
         if(TemporaryAction.getIfFromPageEventInfo()){
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    informationPackage();
                     //TemporaryAction.setPriorPage(PagesName.page_setEvent);
                     startActivity(new Intent(Activity_SetEvent.this,Activity_EventInfo.class));
                 }
@@ -277,6 +318,7 @@ public class Activity_SetEvent extends AppCompatActivity {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    informationPackage();
                     //TemporaryAction.setPriorPage(PagesName.page_setEvent);
                     startActivity(new Intent(Activity_SetEvent.this,Activity_ItemType.class));
                 }

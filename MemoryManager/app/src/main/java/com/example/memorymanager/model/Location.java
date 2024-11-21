@@ -2,7 +2,11 @@ package com.example.memorymanager.model;
 
 public class Location {
 
-    public Location() {}
+    public Location() {
+        longitude=0.0;
+        latitude=0.0;
+        description="no pos";
+    }
     public Location(double latitude, double longitude, String description) {
         this.latitude = latitude;
         this.longitude = longitude;

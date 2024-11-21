@@ -5,7 +5,6 @@ import com.example.memorymanager.handle.Item;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.Thread.*;
 
 public class NotificationService implements Runnable {
     private NotificationService(){}
@@ -37,6 +36,16 @@ public class NotificationService implements Runnable {
         }
         if(!find && event.getItem()!=null)
             notifiedEventItemList.add(event.getItem());
+    }
+
+    public void removeFromNotificationEventList(Event event){
+        if(event==null)
+            return;
+        for(Item i:this.notifiedEventItemList){
+            if(i.getId()==event.getItem().getId()){
+                notifiedEventItemList.remove(i);
+            }
+        }
     }
 
     @Override

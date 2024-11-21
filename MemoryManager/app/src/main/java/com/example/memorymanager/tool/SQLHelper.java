@@ -32,7 +32,7 @@ public class SQLHelper extends SQLiteOpenHelper {
     private static final String TABLE_NAME_ITEM = "item";
     private static final String TABLE_NAME_RECORD = "record";
 
-    private static final String CREATE_TABLE_ACCOUNTEVENT = "create table "+TABLE_NAME_ACCOUNTEVENT+"(event_id INT PRIMARY KEY AUTOINCREMENT,\n" +
+    private static final String CREATE_TABLE_ACCOUNTEVENT = "create table "+TABLE_NAME_ACCOUNTEVENT+"(event_id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             "title VARCHAR(255) NOT NULL,\n" +
             "is_recurring BOOLEAN NOT NULL,\n" +
             "date DATE,\n" +
@@ -40,7 +40,7 @@ public class SQLHelper extends SQLiteOpenHelper {
             "item_id INT,\n "+
             "money INT NOT NULL,\n" +
             "FOREIGN KEY (item_id) REFERENCES Item(item_id) ON DELETE SET NULL)";
-    private static final String CREATE_TABLE_COMMONEVENT = "create table "+TABLE_NAME_COMMONEVENT+"(event_id INT PRIMARY KEY AUTOINCREMENT,\n" +
+    private static final String CREATE_TABLE_COMMONEVENT = "create table "+TABLE_NAME_COMMONEVENT+"(event_id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             "title VARCHAR(255) NOT NULL,\n" +
             "is_recurring BOOLEAN NOT NULL,\n" +
             "date DATE,\n" +
@@ -49,23 +49,25 @@ public class SQLHelper extends SQLiteOpenHelper {
             "type VARCHAR(50),\n" +
             "is_finish BOOLEAN,\n" +
             "FOREIGN KEY (item_id) REFERENCES Item(item_id) ON DELETE SET NULL)";
-    private static final String CREATE_TABLE_ANNIVERSARY = "create table "+TABLE_NAME_ANNIVERSARY+"(event_id INT PRIMARY KEY AUTOINCREMENT,\n" +
+    private static final String CREATE_TABLE_ANNIVERSARY = "create table "+TABLE_NAME_ANNIVERSARY+"(event_id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             "title VARCHAR(255) NOT NULL,\n" +
             "is_recurring BOOLEAN NOT NULL,\n" +
             "date DATE,\n" +
             "description TEXT,\n" +
             "item_id INT,\n "+
             "FOREIGN KEY (item_id) REFERENCES Item(item_id) ON DELETE SET NULL)";
-    private static final String CREATE_TABLE_ITEM = "create table "+TABLE_NAME_ITEM+"(item_id INT PRIMARY KEY AUTOINCREMENT,\n" +
+    private static final String CREATE_TABLE_ITEM = "create table "+TABLE_NAME_ITEM+"(item_id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             "reminder_date DATE,\n" +
             "title VARCHAR(255),\n" +
             "description TEXT)";
-    private static final String CREATE_TABLE_RECORD = "create table "+TABLE_NAME_RECORD+"(item_id INT PRIMARY KEY AUTOINCREMENT,\n" +
+    private static final String CREATE_TABLE_RECORD = "create table "+TABLE_NAME_RECORD+"(record_id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             "information TEXT,\n" +
             "time DATETIME,\n" +
             "latitude DOUBLE,\n" +
             "longitude DOUBLE,\n" +
-            "description TEXT)";
+            "description TEXT,\n" +
+            "item_id INT,\n "+
+            "FOREIGN KEY (item_id) REFERENCES Item(item_id) ON DELETE SET NULL)";
 
     public SQLHelper(Context context) {
         super(context, DB_NAME, null, 1);
@@ -177,9 +179,13 @@ public class SQLHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put("reminder_date",item.getReminderDate().toString());
+        Date date = item.getReminderDate();
+        if(item.getReminderDate()==null) date = new Date();
+        values.put("reminder_date",date.toString());
         values.put("title",item.getTitle());
-        values.put("description",item.getDescription());
+        String de =item.getDescription();
+        if(item.getDescription() == null) de =" ";
+        values.put("description",de);
 
         return db.insert(TABLE_NAME_ITEM,null,values);
     }
@@ -238,19 +244,25 @@ public class SQLHelper extends SQLiteOpenHelper {
     }
     public Item queryItem(int id){
         SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = db.query(TABLE_NAME_ITEM,null,"where item_id = ?",new String[]{String.valueOf(id)},
-                null,null,null);
+        Cursor cursor=null;
+        try{
+            cursor = db.query(TABLE_NAME_ITEM,null,"item_id = ?",new String[]{String.valueOf(id)},
+                    null,null,null);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         Item item = null;
         if(cursor != null){
             while(cursor.moveToNext()){
-                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                //SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String date_str = cursor.getString(cursor.getColumnIndexOrThrow("reminder_date"));
-                Date date;
-                try {
-                    date = ft.parse(date_str);
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
-                }
+                Date date = new Date();
+//                try {
+//                    date = ft.parse(date_str);
+//                } catch (ParseException e) {
+//                    throw new RuntimeException(e);
+//                }
                 String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
                 String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
 
@@ -273,14 +285,15 @@ public class SQLHelper extends SQLiteOpenHelper {
                 int isRecurring_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_recurring"));
                 boolean isRecurring = false;
                 if(isRecurring_int==1) isRecurring = true;
-                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String date_str = cursor.getString(cursor.getColumnIndexOrThrow("date"));
-                Date date;
-                try {
-                    date = ft.parse(date_str);
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
-                }
+//                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                String date_str = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+
+                Date date = new Date();
+//                try {
+//                    date = ft.parse(date_str);
+//                } catch (ParseException e) {
+//                    throw new RuntimeException(e);
+//                }
                 String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
                 int item_id = cursor.getInt(cursor.getColumnIndexOrThrow("item_id"));
                 int money = cursor.getInt(cursor.getColumnIndexOrThrow("money"));
@@ -310,14 +323,14 @@ public class SQLHelper extends SQLiteOpenHelper {
                 int isRecurring_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_recurring"));
                 boolean isRecurring = false;
                 if(isRecurring_int==1) isRecurring = true;
-                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String date_str = cursor.getString(cursor.getColumnIndexOrThrow("date"));
-                Date date;
-                try {
-                    date = ft.parse(date_str);
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
-                }
+                Date date = new Date();
+//                try {
+//                    date = ft.parse(date_str);
+//                } catch (ParseException e) {
+//                    throw new RuntimeException(e);
+//                }
                 String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
                 int item_id = cursor.getInt(cursor.getColumnIndexOrThrow("item_id"));
                 int money = cursor.getInt(cursor.getColumnIndexOrThrow("money"));
@@ -347,14 +360,14 @@ public class SQLHelper extends SQLiteOpenHelper {
                 int isRecurring_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_recurring"));
                 boolean isRecurring = false;
                 if(isRecurring_int==1) isRecurring = true;
-                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                //SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String date_str = cursor.getString(cursor.getColumnIndexOrThrow("date"));
-                Date date;
-                try {
-                    date = ft.parse(date_str);
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
-                }
+                Date date = new Date();
+//                try {
+//                    date = ft.parse(date_str);
+//                } catch (ParseException e) {
+//                    throw new RuntimeException(e);
+//                }
                 String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
                 int item_id = cursor.getInt(cursor.getColumnIndexOrThrow("item_id"));
                 int is_finish_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_finish"));
@@ -387,14 +400,14 @@ public class SQLHelper extends SQLiteOpenHelper {
                 int isRecurring_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_recurring"));
                 boolean isRecurring = false;
                 if(isRecurring_int==1) isRecurring = true;
-                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                //SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String date_str = cursor.getString(cursor.getColumnIndexOrThrow("date"));
-                Date date;
-                try {
-                    date = ft.parse(date_str);
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
-                }
+                Date date = new Date();
+//                try {
+//                    date = ft.parse(date_str);
+//                } catch (ParseException e) {
+//                    throw new RuntimeException(e);
+//                }
                 String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
                 int item_id = cursor.getInt(cursor.getColumnIndexOrThrow("item_id"));
                 int is_finish_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_finish"));
@@ -419,22 +432,27 @@ public class SQLHelper extends SQLiteOpenHelper {
     public List<Event>queryAnniversary(){
         SQLiteDatabase db = getWritableDatabase();
         List<Event> AnniversaryList = new ArrayList<>();
-        Cursor cursor = db.query(TABLE_NAME_ANNIVERSARY,null,null,null,
-                null,null,null);
+        Cursor cursor=null;
+        try{
+            cursor = db.query(TABLE_NAME_ANNIVERSARY,null,null,null,
+                    null,null,null);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         if(cursor != null){
             while(cursor.moveToNext()){
                 String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
                 int isRecurring_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_recurring"));
                 boolean isRecurring = false;
                 if(isRecurring_int==1) isRecurring = true;
-                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                //SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String date_str = cursor.getString(cursor.getColumnIndexOrThrow("date"));
-                Date date;
-                try {
-                    date = ft.parse(date_str);
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
-                }
+                Date date = new Date();
+//                try {
+//                    date = ft.parse(date_str);
+//                } catch (ParseException e) {
+//                    throw new RuntimeException(e);
+//                }
                 String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
                 int item_id = cursor.getInt(cursor.getColumnIndexOrThrow("item_id"));
 
@@ -463,14 +481,14 @@ public class SQLHelper extends SQLiteOpenHelper {
                 int isRecurring_int = cursor.getInt(cursor.getColumnIndexOrThrow("is_recurring"));
                 boolean isRecurring = false;
                 if(isRecurring_int==1) isRecurring = true;
-                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                //SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String date_str = cursor.getString(cursor.getColumnIndexOrThrow("date"));
-                Date date;
-                try {
-                    date = ft.parse(date_str);
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
-                }
+                Date date = new Date();
+//                try {
+//                    date = ft.parse(date_str);
+//                } catch (ParseException e) {
+//                    throw new RuntimeException(e);
+//                }
                 String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
                 int item_id = cursor.getInt(cursor.getColumnIndexOrThrow("item_id"));
 
@@ -491,7 +509,7 @@ public class SQLHelper extends SQLiteOpenHelper {
     public List<TravelRecord>queryRecord(int id){
         SQLiteDatabase db = getWritableDatabase();
         List<TravelRecord> RecordList = new ArrayList<>();
-        Cursor cursor = db.query(TABLE_NAME_RECORD,null,"where item_id = ?",new String[]{String.valueOf(id)},
+        Cursor cursor = db.query(TABLE_NAME_RECORD,null,"item_id = ?",new String[]{String.valueOf(id)},
                 null,null,null);
         if(cursor != null){
             while(cursor.moveToNext()){
@@ -507,6 +525,7 @@ public class SQLHelper extends SQLiteOpenHelper {
                 record.setLocationLatitude(latitude);
                 record.setLocationLongitude(longitude);
                 record.setTime(date);
+                RecordList.add(record);
             }
             cursor.close();
             db.close();

@@ -28,6 +28,7 @@ import com.example.memorymanager.model.CommonEvent;
 import com.example.memorymanager.ui.tools.EventPageControl;
 import com.example.memorymanager.ui.tools.PagesName;
 import com.example.memorymanager.ui.tools.TemporaryAction;
+import com.example.memorymanager.enums.type;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -81,6 +82,7 @@ public class EventAllFragment extends Fragment implements EventPageControl {
     public void onDestroyView() {
         eventList.clear();
         itemTable.clear();
+        
         super.onDestroyView();
         binding = null;
     }
@@ -103,8 +105,8 @@ public class EventAllFragment extends Fragment implements EventPageControl {
     //初始化本界面时将调用此方法调用连接数据库的相关方法来获取事件列表
     private void connectDatabase(){
         //test();
-        int type=TemporaryAction.getChooseFrom_page_type();
-        switch (type){
+        int _type=TemporaryAction.getChooseFrom_page_type();
+        switch (_type){
             case 0:
                 eventList=TemporaryAction.getEventManager().getAnniversaryEvent();
                 break;
@@ -115,6 +117,13 @@ public class EventAllFragment extends Fragment implements EventPageControl {
                 eventList=TemporaryAction.getEventManager().getCommonEvent();
                 break;
             default: break;
+        }
+        for (Event event:eventList) {
+            switch (_type){
+                case 0: event.getItem().setType(type.Anniversary); break;
+                case 1: event.getItem().setType(type.AccountEvent); break;
+                default: event.getItem().setType(type.CommonEvent); break;
+            }
         }
     }
 

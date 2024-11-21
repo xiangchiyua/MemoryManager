@@ -11,6 +11,7 @@ public class TravelRecord {
     String time;
 
     public TravelRecord() {
+        this.location = new Location();
     }
     public TravelRecord(double latitude, double longitude, String description, String information, String time, int id) {
         this.location = new Location(longitude,latitude,description);

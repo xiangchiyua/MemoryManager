@@ -38,6 +38,8 @@ public class Activity_ItemSelect extends AppCompatActivity implements EventPageC
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        TemporaryAction.setEventToShow(null);
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_item_select);

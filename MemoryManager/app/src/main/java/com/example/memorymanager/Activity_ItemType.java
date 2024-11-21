@@ -2,6 +2,7 @@ package com.example.memorymanager;
 
 import android.os.Bundle;
 
+import com.example.memorymanager.ui.tools.TemporaryAction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,8 @@ public class Activity_ItemType extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        TemporaryAction.setEventToShow(null);
+
         super.onCreate(savedInstanceState);
 
         binding = ActivityItemTypeBinding.inflate(getLayoutInflater());
